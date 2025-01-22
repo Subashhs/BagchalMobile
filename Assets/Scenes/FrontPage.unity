@@ -398,7 +398,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &972330577
+--- !u!1 &897290891
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -406,22 +406,22 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 972330579}
-  - component: {fileID: 972330578}
+  - component: {fileID: 897290893}
+  - component: {fileID: 897290892}
   m_Layer: 0
-  m_Name: BagHChalMain
+  m_Name: MainLogoBaghChal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!212 &972330578
+--- !u!212 &897290892
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 972330577}
+  m_GameObject: {fileID: 897290891}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -456,28 +456,28 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 4cc2dd5bb7b15344fa7e6dbd828a1669, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 093c747248a231c4db242bb7f6ab918a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 8.32, y: 14.72}
+  m_Size: {x: 10.24, y: 10.24}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!4 &972330579
+--- !u!4 &897290893
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 972330577}
+  m_GameObject: {fileID: 897290891}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.0058, y: -0.0102, z: 0}
-  m_LocalScale: {x: 0.66961145, y: 0.66961145, z: 0.66961145}
+  m_LocalPosition: {x: -0.0072, y: 0.0072, z: 0}
+  m_LocalScale: {x: 0.522752, y: 0.522752, z: 0.522752}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -488,5 +488,5 @@ SceneRoots:
   m_Roots:
   - {fileID: 519420032}
   - {fileID: 801091631}
-  - {fileID: 972330579}
   - {fileID: 449047594}
+  - {fileID: 897290893}
