@@ -8,69 +8,78 @@ public class GameManager : MonoBehaviour
     public Player currentPlayer;
 
     public GameObject selectedPiece;  // The currently selected piece (tiger or goat)
-    public GameBoard gameBoard;       // Reference to the GameBoard script to manage pieces and the board
+    public GameBoard gameBoard;       // Reference to the GameBoard script
     private bool isPieceSelected = false;
+
+    public float gridSize = 1.0f; // Size of the grid cells (used for grid snapping)
 
     void Start()
     {
         currentPlayer = Player.Tiger; // Start with Tiger's turn
-        selectedPiece = null;  // Initially no piece is selected
     }
 
     void Update()
     {
-        // Listen for user input to select a piece and move it
-        if (Input.GetMouseButtonDown(0))  // Left-click (or touch) to select or move a piece
+        // Listen for user input to select or move a piece
+        if (Input.GetMouseButtonDown(0)) // Left-click or touch to select or move a piece
         {
             Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-            // Check if a piece is selected and move it
+            // If a piece is selected, check if it's a valid move and move it
             if (isPieceSelected && selectedPiece != null)
             {
-                // Check if the click is on a valid grid cell position
-                if (IsValidGridPosition(mousePosition))
-                {
-                    // Move the piece to the selected position
-                    selectedPiece.transform.position = new Vector3(mousePosition.x, mousePosition.y, 0);
-                    isPieceSelected = false;  // Deselect the piece after moving it
-                    SwitchTurn();  // Switch the turn after moving the piece
-                }
+                // Snap the mouse position to the nearest grid cell
+                Vector2 gridPosition = SnapToGrid(mousePosition);
+
+                // Move the piece to the new position
+                selectedPiece.transform.position = new Vector3(gridPosition.x, gridPosition.y, 0);
+
+                // Deselect the piece and switch turn
+                isPieceSelected = false;
+                selectedPiece = null;
+                SwitchTurn();
             }
             else
             {
-                // If no piece is selected, select a piece based on user click
-                SelectPieceAtPosition(mousePosition);
+                // If no piece is selected, select a piece based on where the user clicks
+                SelectPiece(mousePosition);
             }
         }
     }
 
     // Select a piece based on where the user clicks
-    void SelectPieceAtPosition(Vector2 position)
+    void SelectPiece(Vector2 position)
     {
-        // Find all the pieces (tiger or goat) and check if the user clicked on one
-        Collider2D hit = Physics2D.OverlapPoint(position);  // Check for a collision at the mouse click position
-        if (hit != null && hit.gameObject.CompareTag("Tiger") && currentPlayer == Player.Tiger)
+        // Use a collider check to see if the user clicked on a piece (Tiger or Goat)
+        Collider2D hit = Physics2D.OverlapPoint(position);
+
+        if (hit != null)
         {
-            // Select the tiger piece
-            selectedPiece = hit.gameObject;
-            isPieceSelected = true;
-        }
-        else if (hit != null && hit.gameObject.CompareTag("Goat") && currentPlayer == Player.Goat)
-        {
-            // Select the goat piece
-            selectedPiece = hit.gameObject;
-            isPieceSelected = true;
+            // Only allow selecting a piece that belongs to the current player
+            if (hit.gameObject.CompareTag("Tiger") && currentPlayer == Player.Tiger)
+            {
+                selectedPiece = hit.gameObject;
+                isPieceSelected = true;
+                Debug.Log("Tiger Selected");
+            }
+            else if (hit.gameObject.CompareTag("Goat") && currentPlayer == Player.Goat)
+            {
+                selectedPiece = hit.gameObject;
+                isPieceSelected = true;
+                Debug.Log("Goat Selected");
+            }
         }
     }
 
-    // Check if the position clicked is valid for the piece to move to
-    bool IsValidGridPosition(Vector2 position)
+    // Snap the mouse position to the nearest grid cell for proper piece alignment
+    Vector2 SnapToGrid(Vector2 position)
     {
-        // Here we could add logic for valid movement (e.g., tigers can move 1 space at a time, goats can move 1 space horizontally or vertically)
-        return true;  // For simplicity, assume every click is valid. You can implement movement rules here.
+        float x = Mathf.Round(position.x / gridSize) * gridSize;
+        float y = Mathf.Round(position.y / gridSize) * gridSize;
+        return new Vector2(x, y);
     }
 
-    // Switch the turn between Tiger and Goat
+    // Switch turns between Tiger and Goat players
     void SwitchTurn()
     {
         if (currentPlayer == Player.Tiger)

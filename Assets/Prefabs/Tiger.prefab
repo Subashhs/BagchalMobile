@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3661199221107090669}
   m_Layer: 0
   m_Name: Tiger
-  m_TagString: Untagged
+  m_TagString: Tiger
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -98,7 +98,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9b59371d021bc740a27282b1b4131da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isTiger: 1
+  tigerPrefab: {fileID: 0}
+  goatPrefab: {fileID: 0}
 --- !u!61 &3661199221107090669
 BoxCollider2D:
   m_ObjectHideFlags: 0
