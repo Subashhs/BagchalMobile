@@ -10,9 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2457871245377705744}
   - component: {fileID: 6420188496417667573}
-  - component: {fileID: -2653142404416411552}
   - component: {fileID: -2669168959926216975}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Goat
   m_TagString: Goat
   m_Icon: {fileID: 0}
@@ -86,20 +85,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &-2653142404416411552
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5552961173602483017}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d9b59371d021bc740a27282b1b4131da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tigerPrefab: {fileID: 0}
-  goatPrefab: {fileID: 0}
 --- !u!61 &-2669168959926216975
 BoxCollider2D:
   m_ObjectHideFlags: 0
