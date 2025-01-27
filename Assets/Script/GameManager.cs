@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -8,11 +9,14 @@ public class GameManager : MonoBehaviour
     public GameObject tigerPrefab;
     public GameObject goatPrefab;
     public Vector2[] boardPositions; // Array of all 25 positions with decimal values
-    public Text statusText;
+    public TextMeshProUGUI statusText;
 
     private int[,] boardState = new int[5, 5]; // 0 = empty, 1 = tiger, 2 = goat
+    private bool isGoatPlacementPhase = true; // Goats are placed one by one in the beginning
     private bool isTigerTurn = false; // Track whose turn it is
     private int selectedX = -1, selectedY = -1; // Track selected piece for movement
+    private int goatsPlaced = 0; // Track how many goats have been placed
+    private int goatsCaptured = 0; // Track how many goats have been captured by tigers
 
     void Awake()
     {
@@ -31,8 +35,7 @@ public class GameManager : MonoBehaviour
         InitializeBoard();
         AssignDecimalPositions(); // Assign decimal positions to the board
         PlaceTigers();
-        PlaceGoats();
-        UpdateStatusText("Goat's Turn");
+        UpdateStatusText("Place a Goat");
     }
 
     void InitializeBoard()
@@ -50,31 +53,23 @@ public class GameManager : MonoBehaviour
     {
         boardPositions = new Vector2[25]
         {
-            new Vector2(8.47f, 4.03f), new Vector2(8.47f, 2.85f), new Vector2(8.47f, 1.6f), new Vector2(8.47f, 0.339f), new Vector2(8.47f, -0.86f),
-            new Vector2(9.683001f, 4.03f), new Vector2(9.683001f, 2.85f), new Vector2(9.683001f, 1.6f), new Vector2(9.683001f, 0.339f), new Vector2(9.683001f, -0.862f),
-            new Vector2(10.943f, 4.03f), new Vector2(10.943f, 2.85f), new Vector2(10.943f, 1.6f), new Vector2(10.943f, 0.339f), new Vector2(10.943f, -0.86f),
-            new Vector2(12.213f, 4.03f), new Vector2(12.213f, 2.85f), new Vector2(12.213f, 1.6f), new Vector2(12.213f, 0.339f), new Vector2(12.213f, -1.682f),
-            new Vector2(13.413f, 4.03f), new Vector2(13.413f, 2.85f), new Vector2(13.413f, 1.6f), new Vector2(13.413f, 0.339f), new Vector2(13.413f, -1.682f)
+            new Vector2(-137.521f, -255.408f), new Vector2(-137.521f, -256.5981f), new Vector2(-137.521f, -255.408f), new Vector2(-137.521f, -259.119f), new Vector2(-137.521f, -260.33f),
+            new Vector2(-136.28f, -255.408f), new Vector2(-136.28f, -256.5981f), new Vector2(-136.28f, -255.408f), new Vector2(-136.28f, -259.119f), new Vector2(-136.28f, -260.33f),
+            new Vector2(-135.041f, -255.408f), new Vector2(-135.041f, -256.5981f), new Vector2(-135.041f, -255.408f), new Vector2(-135.041f, -259.119f), new Vector2(-135.041f, -260.33f),
+            new Vector2(-133.801f, -255.408f), new Vector2(-133.801f, -256.5981f), new Vector2(-133.801f, -255.408f), new Vector2(-133.801f, -259.119f), new Vector2(-133.801f, -260.33f),
+            new Vector2(-132.58f, -255.408f), new Vector2(-132.58f, -256.5981f), new Vector2(-132.58f, -255.408f), new Vector2(-132.58f, 0-259.119f), new Vector2(-132.58f, -260.33f)
         };
     }
 
+  
+
     void PlaceTigers()
     {
-        // Place tigers at the four corners
-        PlacePiece(0, 0, tigerPrefab); // Top-left corner (index 0)
-        PlacePiece(0, 4, tigerPrefab); // Top-right corner (index 4)
-        PlacePiece(4, 0, tigerPrefab); // Bottom-left corner (index 20)
-        PlacePiece(4, 4, tigerPrefab); // Bottom-right corner (index 24)
-    }
-
-    void PlaceGoats()
-    {
-        // Place goats at specific positions
-        PlacePiece(2, 2, goatPrefab); // Center of the board (index 12)
-        PlacePiece(1, 1, goatPrefab); // (index 6)
-        PlacePiece(1, 3, goatPrefab); // (index 8)
-        PlacePiece(3, 1, goatPrefab); // (index 16)
-        PlacePiece(3, 3, goatPrefab); // (index 18)
+        // Place 4 tigers at the corners
+        PlacePiece(0, 0, tigerPrefab); // Top-left corner
+        PlacePiece(0, 4, tigerPrefab); // Top-right corner
+        PlacePiece(4, 0, tigerPrefab); // Bottom-left corner
+        PlacePiece(4, 4, tigerPrefab); // Bottom-right corner
     }
 
     void PlacePiece(int x, int y, GameObject piecePrefab)
@@ -94,13 +89,43 @@ public class GameManager : MonoBehaviour
 
     public void OnPositionClicked(int x, int y)
     {
-        if (isTigerTurn)
+        if (isGoatPlacementPhase)
         {
-            HandleTigerTurn(x, y);
+            HandleGoatPlacement(x, y);
         }
         else
         {
-            HandleGoatTurn(x, y);
+            if (isTigerTurn)
+            {
+                HandleTigerTurn(x, y);
+            }
+            else
+            {
+                HandleGoatTurn(x, y);
+            }
+        }
+    }
+
+    void HandleGoatPlacement(int x, int y)
+    {
+        if (boardState[x, y] == 0)
+        {
+            PlacePiece(x, y, goatPrefab);
+            goatsPlaced++;
+            if (goatsPlaced >= 5) // After placing 5 goats, start the movement phase
+            {
+                isGoatPlacementPhase = false;
+                isTigerTurn = true;
+                UpdateStatusText("Tiger's Turn");
+            }
+            else
+            {
+                UpdateStatusText("Place a Goat");
+            }
+        }
+        else
+        {
+            Debug.Log("Position is already occupied!");
         }
     }
 
@@ -126,6 +151,7 @@ public class GameManager : MonoBehaviour
                 selectedY = -1;
                 isTigerTurn = false;
                 UpdateStatusText("Goat's Turn");
+                CheckWinConditions();
             }
             else
             {
@@ -158,6 +184,7 @@ public class GameManager : MonoBehaviour
                 selectedY = -1;
                 isTigerTurn = true;
                 UpdateStatusText("Tiger's Turn");
+                CheckWinConditions();
             }
             else
             {
@@ -193,6 +220,7 @@ public class GameManager : MonoBehaviour
             {
                 boardState[midX, midY] = 0; // Capture the goat
                 Destroy(GetPieceAtPosition(midX, midY)); // Remove the goat from the scene
+                goatsCaptured++;
                 return true;
             }
         }
@@ -254,6 +282,34 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    void CheckWinConditions()
+    {
+        if (goatsCaptured >= 5)
+        {
+            UpdateStatusText("Tigers Win!");
+            EndGame();
+        }
+        else if (AreTigersBlocked())
+        {
+            UpdateStatusText("Goats Win!");
+            EndGame();
+        }
+    }
+
+    bool AreTigersBlocked()
+    {
+        // Check if all tigers are blocked (no valid moves)
+        // Implement logic to check if tigers can move or capture
+        return false; // Placeholder
+    }
+
+    void EndGame()
+    {
+        // Disable further moves
+        isGoatPlacementPhase = false;
+        isTigerTurn = false;
+    }
+
     void OnDrawGizmos()
     {
         if (boardPositions != null)
@@ -261,8 +317,9 @@ public class GameManager : MonoBehaviour
             Gizmos.color = Color.red;
             for (int i = 0; i < boardPositions.Length; i++)
             {
-                Gizmos.DrawSphere(boardPositions[i], 0.1f);
+                Gizmos.DrawSphere(boardPositions[i], 0.1f); // This will show spheres at each position
             }
         }
-    }
+    
 }
+    }
