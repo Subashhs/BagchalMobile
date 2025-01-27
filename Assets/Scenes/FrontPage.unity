@@ -398,7 +398,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &897290891
+--- !u!1 &1222085850
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -406,22 +406,22 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 897290893}
-  - component: {fileID: 897290892}
+  - component: {fileID: 1222085852}
+  - component: {fileID: 1222085851}
   m_Layer: 0
-  m_Name: MainLogoBaghChal
+  m_Name: WhatsApp Image 2025-01-21 at 21.53.22_53a699ad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!212 &897290892
+--- !u!212 &1222085851
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 897290891}
+  m_GameObject: {fileID: 1222085850}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -467,17 +467,17 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!4 &897290893
+--- !u!4 &1222085852
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 897290891}
+  m_GameObject: {fileID: 1222085850}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.0072, y: 0.0072, z: 0}
-  m_LocalScale: {x: 0.522752, y: 0.522752, z: 0.522752}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -489,4 +489,4 @@ SceneRoots:
   - {fileID: 519420032}
   - {fileID: 801091631}
   - {fileID: 449047594}
-  - {fileID: 897290893}
+  - {fileID: 1222085852}

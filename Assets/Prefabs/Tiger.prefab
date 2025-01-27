@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2130430110400198557}
   - component: {fileID: 4666056774447727861}
   - component: {fileID: 8242334293874169157}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: Tiger
   m_TagString: Tiger
   m_Icon: {fileID: 0}
@@ -71,9 +71,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 8
+  m_SortingLayerID: -1752157441
+  m_SortingLayer: -1
+  m_SortingOrder: 3
   m_Sprite: {fileID: 2747690628134850419, guid: b670ab75dde984907b8570040daa08c5, type: 3}
   m_Color: {r: 0, g: 0.9056604, b: 0.013761628, a: 1}
   m_FlipX: 0
