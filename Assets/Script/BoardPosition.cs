@@ -1,30 +1,24 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BoardPosition : MonoBehaviour
 {
-    public int x; // X coordinate of this position on the board
-    public int y; // Y coordinate of this position on the board
-
-    private GameManager gameManager;
+    private Button button;
 
     void Start()
     {
-        // Find the GameManager instance
-        gameManager = GameManager.Instance;
+        button = GetComponent<Button>();
 
-        // Ensure the GameManager is found
-        if (gameManager == null)
+        if (button != null)
         {
-            Debug.LogError("GameManager instance not found!");
-        }
-    }
-
-    void OnMouseDown()
-    {
-        // Notify the GameManager when this position is clicked
-        if (gameManager != null)
-        {
-            gameManager.OnPositionClicked(x, y);
+            string positionKey = button.name; // Use the button's name as the position key
+            button.onClick.AddListener(() =>
+            {
+                if (GameManager.Instance != null)
+                {
+                    GameManager.Instance.OnPositionClicked(button, positionKey); // Pass both button and positionKey
+                }
+            });
         }
     }
 }

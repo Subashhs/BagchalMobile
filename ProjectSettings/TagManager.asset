@@ -35,13 +35,13 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Board
   - Water
   - UI
-  - Board
+  - 
   - Goat
   - Tiger
-  - 
+  - Animals
   - 
   - 
   - 
@@ -67,4 +67,7 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: 
+    uniqueID: 2542809855
     locked: 0

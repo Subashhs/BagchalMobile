@@ -1,325 +1,185 @@
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance;
+    // Singleton instance
+    public static GameManager Instance { get; private set; }
 
-    public GameObject tigerPrefab;
-    public GameObject goatPrefab;
-    public Vector2[] boardPositions; // Array of all 25 positions with decimal values
-    public TextMeshProUGUI statusText;
+    public GameObject tigerPrefab; // Prefab for tiger pieces
+    public GameObject goatPrefab;  // Prefab for goat pieces
 
-    private int[,] boardState = new int[5, 5]; // 0 = empty, 1 = tiger, 2 = goat
-    private bool isGoatPlacementPhase = true; // Goats are placed one by one in the beginning
-    private bool isTigerTurn = false; // Track whose turn it is
-    private int selectedX = -1, selectedY = -1; // Track selected piece for movement
-    private int goatsPlaced = 0; // Track how many goats have been placed
-    private int goatsCaptured = 0; // Track how many goats have been captured by tigers
+    private Dictionary<string, GameObject> boardPositions = new Dictionary<string, GameObject>();
+    private int totalGoats = 20;      // Total number of goats allowed
+    private int placedGoats = 0;     // Number of goats placed
+    private bool isTigerTurn = false; // Flag to track the current turn
+    private GameObject selectedTiger = null; // Keep track of the selected tiger
 
-    void Awake()
+    private List<GameObject> tigers = new List<GameObject>(); // List of all tigers (4 tigers total)
+
+    private void Awake()
     {
-        if (Instance == null)
+        // Ensure there is only one instance of GameManager
+        if (Instance != null && Instance != this)
         {
-            Instance = this;
+            Destroy(gameObject);
         }
         else
         {
-            Destroy(gameObject);
+            Instance = this;
         }
     }
 
     void Start()
     {
         InitializeBoard();
-        AssignDecimalPositions(); // Assign decimal positions to the board
-        PlaceTigers();
-        UpdateStatusText("Place a Goat");
+        PlaceInitialTigers();
+        isTigerTurn = false; // First turn is for the goat
     }
 
+    // Initialize the board by linking buttons to their positions
     void InitializeBoard()
     {
-        for (int i = 0; i < 5; i++)
+        foreach (Button button in FindObjectsOfType<Button>())
         {
-            for (int j = 0; j < 5; j++)
+            string positionKey = button.name; // Use button name as a unique key
+            boardPositions[positionKey] = null; // Set all positions to empty
+
+            // Pass both the button and positionKey to the listener
+            button.onClick.AddListener(() => OnPositionClicked(button, positionKey));
+        }
+    }
+
+    // Place the four tigers at the corners of the board
+    void PlaceInitialTigers()
+    {
+        // Specify the corner positions based on the button naming convention
+        string[] tigerPositions = new string[] { "Tile_0_0", "Tile_0_4", "Tile_4_0", "Tile_4_4" }; // Top-left, top-right, bottom-left, bottom-right
+
+        foreach (string position in tigerPositions)
+        {
+            // Find the button by its name in the scene
+            Button button = GameObject.Find(position).GetComponent<Button>();
+
+            if (button != null)
             {
-                boardState[i, j] = 0; // Initialize all positions as empty
-            }
-        }
-    }
+                // Instantiate tiger prefab at the button's position
+                GameObject tiger = Instantiate(tigerPrefab, button.transform.position, Quaternion.identity);
+                tiger.transform.position = new Vector3(tiger.transform.position.x, tiger.transform.position.y, -1f); // Ensure it's on top
 
-    void AssignDecimalPositions()
-    {
-        boardPositions = new Vector2[25]
-        {
-            new Vector2(-137.521f, -255.408f), new Vector2(-137.521f, -256.5981f), new Vector2(-137.521f, -255.408f), new Vector2(-137.521f, -259.119f), new Vector2(-137.521f, -260.33f),
-            new Vector2(-136.28f, -255.408f), new Vector2(-136.28f, -256.5981f), new Vector2(-136.28f, -255.408f), new Vector2(-136.28f, -259.119f), new Vector2(-136.28f, -260.33f),
-            new Vector2(-135.041f, -255.408f), new Vector2(-135.041f, -256.5981f), new Vector2(-135.041f, -255.408f), new Vector2(-135.041f, -259.119f), new Vector2(-135.041f, -260.33f),
-            new Vector2(-133.801f, -255.408f), new Vector2(-133.801f, -256.5981f), new Vector2(-133.801f, -255.408f), new Vector2(-133.801f, -259.119f), new Vector2(-133.801f, -260.33f),
-            new Vector2(-132.58f, -255.408f), new Vector2(-132.58f, -256.5981f), new Vector2(-132.58f, -255.408f), new Vector2(-132.58f, 0-259.119f), new Vector2(-132.58f, -260.33f)
-        };
-    }
+                // Set sorting layer and order to ensure the tiger is rendered above the board
+                SpriteRenderer tigerRenderer = tiger.GetComponent<SpriteRenderer>();
+                if (tigerRenderer != null)
+                {
+                    tigerRenderer.sortingLayerName = "Animals";
+                    tigerRenderer.sortingOrder = 1; // Ensure it's rendered above the board
+                }
 
-  
-
-    void PlaceTigers()
-    {
-        // Place 4 tigers at the corners
-        PlacePiece(0, 0, tigerPrefab); // Top-left corner
-        PlacePiece(0, 4, tigerPrefab); // Top-right corner
-        PlacePiece(4, 0, tigerPrefab); // Bottom-left corner
-        PlacePiece(4, 4, tigerPrefab); // Bottom-right corner
-    }
-
-    void PlacePiece(int x, int y, GameObject piecePrefab)
-    {
-        if (boardState[x, y] == 0)
-        {
-            Vector2 position = boardPositions[x * 5 + y]; // Get the position from the array
-            GameObject piece = Instantiate(piecePrefab, position, Quaternion.identity);
-            boardState[x, y] = (piecePrefab == tigerPrefab) ? 1 : 2;
-            Debug.Log($"Placed {piecePrefab.name} at ({x}, {y}) - Position: {position}");
-        }
-        else
-        {
-            Debug.LogWarning($"Position ({x}, {y}) is already occupied!");
-        }
-    }
-
-    public void OnPositionClicked(int x, int y)
-    {
-        if (isGoatPlacementPhase)
-        {
-            HandleGoatPlacement(x, y);
-        }
-        else
-        {
-            if (isTigerTurn)
-            {
-                HandleTigerTurn(x, y);
+                // Store the tiger in the tigers list
+                tigers.Add(tiger);
+                boardPositions[position] = tiger;
             }
             else
             {
-                HandleGoatTurn(x, y);
+                Debug.LogError("Button " + position + " not found in the scene!");
             }
         }
     }
 
-    void HandleGoatPlacement(int x, int y)
+    // Handles tile click logic
+    public void OnPositionClicked(Button button, string positionKey)
     {
-        if (boardState[x, y] == 0)
+        // Check if the position is already occupied
+        if (boardPositions[positionKey] != null)
         {
-            PlacePiece(x, y, goatPrefab);
-            goatsPlaced++;
-            if (goatsPlaced >= 5) // After placing 5 goats, start the movement phase
+            Debug.Log("Tile already occupied!");
+            return;
+        }
+
+        if (isTigerTurn)
+        {
+            // Tiger's turn: Select and move a tiger
+            if (selectedTiger == null)
             {
-                isGoatPlacementPhase = false;
-                isTigerTurn = true;
-                UpdateStatusText("Tiger's Turn");
+                // No tiger selected, so select one (first time only)
+                SelectTiger();
             }
             else
             {
-                UpdateStatusText("Place a Goat");
+                // Move the selected tiger to the new position
+                MoveTiger(button, positionKey);
             }
+        }
+        else if (placedGoats < totalGoats)
+        {
+            PlaceGoat(button, positionKey);
         }
         else
         {
-            Debug.Log("Position is already occupied!");
+            Debug.Log("All goats placed! Tigers' turn only now.");
         }
+
+        // Switch turn
+        isTigerTurn = !isTigerTurn;
     }
 
-    void HandleTigerTurn(int x, int y)
+    // Select a tiger (first time only during tiger's turn)
+    void SelectTiger()
     {
-        if (selectedX == -1 && selectedY == -1)
+        // For simplicity, we select the first tiger in the list
+        if (tigers.Count > 0)
         {
-            // Select a tiger to move
-            if (boardState[x, y] == 1) // Check if the position has a tiger
-            {
-                selectedX = x;
-                selectedY = y;
-                Debug.Log($"Tiger selected at: ({x}, {y})");
-            }
+            selectedTiger = tigers[0]; // Select the first tiger (you can add a UI or another logic to choose the tiger)
+
+            Debug.Log("Tiger selected: " + selectedTiger.name);
         }
         else
         {
-            // Move the selected tiger
-            if (IsValidTigerMove(selectedX, selectedY, x, y))
-            {
-                MovePiece(selectedX, selectedY, x, y);
-                selectedX = -1;
-                selectedY = -1;
-                isTigerTurn = false;
-                UpdateStatusText("Goat's Turn");
-                CheckWinConditions();
-            }
-            else
-            {
-                Debug.Log("Invalid move!");
-                selectedX = -1;
-                selectedY = -1;
-            }
+            Debug.LogError("No tigers available to select!");
         }
     }
 
-    void HandleGoatTurn(int x, int y)
+    // Move the selected tiger to the new position
+    void MoveTiger(Button button, string positionKey)
     {
-        if (selectedX == -1 && selectedY == -1)
+        if (selectedTiger != null)
         {
-            // Select a goat to move
-            if (boardState[x, y] == 2) // Check if the position has a goat
-            {
-                selectedX = x;
-                selectedY = y;
-                Debug.Log($"Goat selected at: ({x}, {y})");
-            }
+            // Move the selected tiger to the button's position
+            selectedTiger.transform.position = new Vector3(button.transform.position.x, button.transform.position.y, -1f);
+
+            // Update the board positions dictionary to reflect the new position
+            boardPositions[positionKey] = selectedTiger;
+
+            // Reset selected tiger after moving
+            selectedTiger = null;
+
+            Debug.Log("Tiger moved to: " + positionKey);
         }
         else
         {
-            // Move the selected goat
-            if (IsValidGoatMove(selectedX, selectedY, x, y))
-            {
-                MovePiece(selectedX, selectedY, x, y);
-                selectedX = -1;
-                selectedY = -1;
-                isTigerTurn = true;
-                UpdateStatusText("Tiger's Turn");
-                CheckWinConditions();
-            }
-            else
-            {
-                Debug.Log("Invalid move!");
-                selectedX = -1;
-                selectedY = -1;
-            }
+            Debug.LogError("No tiger selected to move!");
         }
     }
 
-    bool IsValidTigerMove(int fromX, int fromY, int toX, int toY)
+    // Place a goat on the board
+    void PlaceGoat(Button button, string positionKey)
     {
-        // Check if the target position is empty
-        if (boardState[toX, toY] != 0)
+        // Instantiate the goat prefab at the button's position
+        GameObject goat = Instantiate(goatPrefab, button.transform.position, Quaternion.identity);
+        goat.transform.position = new Vector3(goat.transform.position.x, goat.transform.position.y, -1f); // Ensure it's on top
+
+        // Set sorting layer and order to ensure the goat is rendered above the board
+        SpriteRenderer goatRenderer = goat.GetComponent<SpriteRenderer>();
+        if (goatRenderer != null)
         {
-            return false;
+            goatRenderer.sortingLayerName = "Animals";
+            goatRenderer.sortingOrder = 1; // Ensure it's rendered above the board
         }
 
-        // Check if the move is one step in any direction
-        int dx = Mathf.Abs(toX - fromX);
-        int dy = Mathf.Abs(toY - fromY);
-        if (dx <= 1 && dy <= 1)
-        {
-            return true;
-        }
-
-        // Check for a capture move (jumping over a goat)
-        if (dx == 2 && dy == 0 || dx == 0 && dy == 2)
-        {
-            int midX = (fromX + toX) / 2;
-            int midY = (fromY + toY) / 2;
-            if (boardState[midX, midY] == 2) // Check if there's a goat in the middle
-            {
-                boardState[midX, midY] = 0; // Capture the goat
-                Destroy(GetPieceAtPosition(midX, midY)); // Remove the goat from the scene
-                goatsCaptured++;
-                return true;
-            }
-        }
-
-        return false;
+        // Mark the position as occupied
+        boardPositions[positionKey] = goat;
+        placedGoats++; // Increment the goat counter
+        Debug.Log("Goat placed at: " + positionKey);
     }
-
-    bool IsValidGoatMove(int fromX, int fromY, int toX, int toY)
-    {
-        // Check if the target position is empty
-        if (boardState[toX, toY] != 0)
-        {
-            return false;
-        }
-
-        // Check if the move is one step in any direction
-        int dx = Mathf.Abs(toX - fromX);
-        int dy = Mathf.Abs(toY - fromY);
-        if (dx <= 1 && dy <= 1)
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-    void MovePiece(int fromX, int fromY, int toX, int toY)
-    {
-        int pieceType = boardState[fromX, fromY];
-        boardState[fromX, fromY] = 0; // Clear the original position
-        boardState[toX, toY] = pieceType; // Update the new position
-
-        // Move the GameObject to the new position
-        GameObject piece = GetPieceAtPosition(fromX, fromY);
-        if (piece != null)
-        {
-            piece.transform.position = boardPositions[toX * 5 + toY];
-        }
-    }
-
-    GameObject GetPieceAtPosition(int x, int y)
-    {
-        Collider2D[] colliders = Physics2D.OverlapPointAll(boardPositions[x * 5 + y]);
-        foreach (Collider2D collider in colliders)
-        {
-            if (collider.CompareTag("Tiger") || collider.CompareTag("Goat"))
-            {
-                return collider.gameObject;
-            }
-        }
-        return null;
-    }
-
-    void UpdateStatusText(string message)
-    {
-        if (statusText != null)
-        {
-            statusText.text = message;
-        }
-    }
-
-    void CheckWinConditions()
-    {
-        if (goatsCaptured >= 5)
-        {
-            UpdateStatusText("Tigers Win!");
-            EndGame();
-        }
-        else if (AreTigersBlocked())
-        {
-            UpdateStatusText("Goats Win!");
-            EndGame();
-        }
-    }
-
-    bool AreTigersBlocked()
-    {
-        // Check if all tigers are blocked (no valid moves)
-        // Implement logic to check if tigers can move or capture
-        return false; // Placeholder
-    }
-
-    void EndGame()
-    {
-        // Disable further moves
-        isGoatPlacementPhase = false;
-        isTigerTurn = false;
-    }
-
-    void OnDrawGizmos()
-    {
-        if (boardPositions != null)
-        {
-            Gizmos.color = Color.red;
-            for (int i = 0; i < boardPositions.Length; i++)
-            {
-                Gizmos.DrawSphere(boardPositions[i], 0.1f); // This will show spheres at each position
-            }
-        }
-    
 }
-    }
