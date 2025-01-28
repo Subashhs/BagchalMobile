@@ -13,11 +13,11 @@ public class GameManager : MonoBehaviour
     private int totalGoats = 20;
     private int placedGoats = 0;
     private bool isTigerTurn = false;
+    private bool isPlacementPhase = true;
     private GameObject selectedTiger = null;
+    private GameObject selectedGoat = null;
     private List<GameObject> tigers = new List<GameObject>();
     private int goatsCaptured = 0;
-    private bool isPlacementPhase = true;
-    private GameObject selectedGoat = null;
 
     private void Awake()
     {
@@ -29,19 +29,29 @@ public class GameManager : MonoBehaviour
     {
         InitializeBoard();
         PlaceInitialTigers();
-        isTigerTurn = false; // Goat starts
+        isTigerTurn = false; // Goat starts first
     }
 
     #region Board Initialization
     void InitializeBoard()
     {
+        float tileSize = 200f; // Each tile is 200x200
+        float boardStartX = -500f; // Top-left corner (-500, +500)
+        float boardStartY = 500f;
+
         // Initialize all 25 positions (5x5 grid)
         for (int x = 0; x < 5; x++)
         {
             for (int y = 0; y < 5; y++)
             {
                 string key = $"Tile_{x}_{y}";
+                float tileX = boardStartX + tileSize * x + tileSize / 2;
+                float tileY = boardStartY - tileSize * y - tileSize / 2;
+
                 boardPositions[key] = null;
+
+                // Optionally, debug tile positions
+                Debug.Log($"Tile {key} position: ({tileX}, {tileY})");
             }
         }
 
@@ -63,28 +73,46 @@ public class GameManager : MonoBehaviour
     void PlaceInitialTigers()
     {
         string[] tigerPositions = { "Tile_0_0", "Tile_0_4", "Tile_4_0", "Tile_4_4" };
+
         foreach (string position in tigerPositions)
         {
-            Button button = GameObject.Find(position)?.GetComponent<Button>();
-            if (button != null)
+            if (boardPositions.ContainsKey(position))
             {
-                GameObject tiger = Instantiate(tigerPrefab, button.transform.position, Quaternion.identity);
-                tiger.transform.position = new Vector3(tiger.transform.position.x, tiger.transform.position.y, -1f);
+                string[] parts = position.Split('_');
+                int x = int.Parse(parts[1]);
+                int y = int.Parse(parts[2]);
+
+                float tileSize = 200f;
+                float boardStartX = -500f;
+                float boardStartY = 500f;
+
+                float tigerX = boardStartX + tileSize * x + tileSize / 2;
+                float tigerY = boardStartY - tileSize * y - tileSize / 2;
+
+                // Instantiate and place tiger
+                GameObject tiger = Instantiate(tigerPrefab);
+                tiger.transform.position = new Vector3(tigerX, tigerY, -1f);
+
+                // Set sorting layer for visibility
                 SpriteRenderer tigerRenderer = tiger.GetComponent<SpriteRenderer>();
                 if (tigerRenderer != null)
                 {
                     tigerRenderer.sortingLayerName = "Animals";
                     tigerRenderer.sortingOrder = 1;
                 }
+
                 tigers.Add(tiger);
                 boardPositions[position] = tiger;
             }
-            else Debug.LogError($"Button {position} not found!");
+            else
+            {
+                Debug.LogError($"Position {position} not found in boardPositions!");
+            }
         }
     }
     #endregion
 
-    #region Click Handling
+    #region Turn Handling
     public void OnPositionClicked(Button button, string positionKey)
     {
         if (!boardPositions.ContainsKey(positionKey))
@@ -99,11 +127,20 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        if (isTigerTurn) HandleTigerTurn(button, positionKey);
+        if (isTigerTurn)
+        {
+            HandleTigerTurn(button, positionKey);
+        }
         else
         {
-            if (isPlacementPhase) PlaceGoat(button, positionKey);
-            else HandleGoatMovement(button, positionKey);
+            if (isPlacementPhase)
+            {
+                PlaceGoat(button, positionKey);
+            }
+            else
+            {
+                HandleGoatMovement(button, positionKey);
+            }
         }
 
         CheckWinConditions();
@@ -115,7 +152,6 @@ public class GameManager : MonoBehaviour
     {
         if (selectedTiger == null)
         {
-            // Select tiger
             GameObject piece = boardPositions[GetPositionKeyOfPiece(button.gameObject)];
             if (piece != null && piece.CompareTag("Tiger"))
             {
@@ -141,6 +177,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    void MoveTiger(Button button, string positionKey)
+    {
+        selectedTiger.transform.position = button.transform.position;
+        boardPositions[GetPositionKeyOfPiece(selectedTiger)] = null; // Clear old position
+        boardPositions[positionKey] = selectedTiger;
+    }
+
     bool IsValidTigerMove(string fromPos, string toPos)
     {
         List<string> adjacent = GetValidAdjacentPositions(fromPos);
@@ -148,66 +191,6 @@ public class GameManager : MonoBehaviour
         else return IsCaptureMove(fromPos, toPos);
     }
 
-    void MoveTiger(Button button, string positionKey)
-    {
-        selectedTiger.transform.position = new Vector3(button.transform.position.x, button.transform.position.y, -1f);
-        boardPositions[GetPositionKeyOfPiece(selectedTiger)] = null; // Clear old position
-        boardPositions[positionKey] = selectedTiger;
-    }
-    #endregion
-
-    #region Goat Logic
-    void HandleGoatMovement(Button button, string positionKey)
-    {
-        if (selectedGoat == null)
-        {
-            GameObject piece = boardPositions[GetPositionKeyOfPiece(button.gameObject)];
-            if (piece != null && piece.CompareTag("Goat")) selectedGoat = piece;
-        }
-        else
-        {
-            string currentPos = GetPositionKeyOfPiece(selectedGoat);
-            if (IsValidGoatMove(currentPos, positionKey))
-            {
-                MoveGoat(selectedGoat, button, positionKey);
-                isTigerTurn = true;
-                selectedGoat = null;
-            }
-            else Debug.Log("Invalid goat move!");
-        }
-    }
-
-    bool IsValidGoatMove(string fromPos, string toPos)
-    {
-        List<string> adjacent = GetValidAdjacentPositions(fromPos);
-        return adjacent.Contains(toPos) && boardPositions[toPos] == null;
-    }
-
-    void PlaceGoat(Button button, string positionKey)
-    {
-        GameObject goat = Instantiate(goatPrefab, button.transform.position, Quaternion.identity);
-        goat.transform.position = new Vector3(goat.transform.position.x, goat.transform.position.y, -1f);
-        SpriteRenderer goatRenderer = goat.GetComponent<SpriteRenderer>();
-        if (goatRenderer != null)
-        {
-            goatRenderer.sortingLayerName = "Animals";
-            goatRenderer.sortingOrder = 1;
-        }
-        boardPositions[positionKey] = goat;
-        placedGoats++;
-        if (placedGoats >= totalGoats) isPlacementPhase = false;
-    }
-
-    void MoveGoat(GameObject goat, Button button, string positionKey)
-    {
-        string currentPos = GetPositionKeyOfPiece(goat);
-        boardPositions[currentPos] = null;
-        goat.transform.position = new Vector3(button.transform.position.x, button.transform.position.y, -1f);
-        boardPositions[positionKey] = goat;
-    }
-    #endregion
-
-    #region Capture & Win Conditions
     bool IsCaptureMove(string fromPos, string toPos)
     {
         string[] fromParts = fromPos.Split('_');
@@ -216,9 +199,9 @@ public class GameManager : MonoBehaviour
         int toX = int.Parse(toParts[1]), toY = int.Parse(toParts[2]);
 
         int dx = toX - fromX, dy = toY - fromY;
-        if (Mathf.Abs(dx) != 2 && Mathf.Abs(dy) != 2 && Mathf.Abs(dx) != Mathf.Abs(dy)) return false;
+        if (Mathf.Abs(dx) != 2 && Mathf.Abs(dy) != 2) return false;
 
-        int midX = fromX + dx / 2, midY = fromY + dy / 2;
+        int midX = (fromX + toX) / 2, midY = (fromY + toY) / 2;
         string midPos = $"Tile_{midX}_{midY}";
         return boardPositions.ContainsKey(midPos) &&
                boardPositions[midPos] != null &&
@@ -237,21 +220,53 @@ public class GameManager : MonoBehaviour
         Destroy(boardPositions[midPos]);
         boardPositions[midPos] = null;
     }
+    #endregion
 
-    void CheckWinConditions()
+    #region Goat Logic
+    void PlaceGoat(Button button, string positionKey)
     {
-        if (goatsCaptured >= 5) Debug.Log("Tigers win!");
+        GameObject goat = Instantiate(goatPrefab);
+        goat.transform.position = button.transform.position;
+        boardPositions[positionKey] = goat;
+        placedGoats++;
 
-        bool allBlocked = true;
-        foreach (GameObject tiger in tigers)
+        if (placedGoats >= totalGoats) isPlacementPhase = false;
+
+        isTigerTurn = true; // Switch to tiger's turn
+    }
+
+    void HandleGoatMovement(Button button, string positionKey)
+    {
+        if (selectedGoat == null)
         {
-            string pos = GetPositionKeyOfPiece(tiger);
-            foreach (string adjacent in GetValidAdjacentPositions(pos))
-            {
-                if (boardPositions[adjacent] == null) allBlocked = false;
-            }
+            GameObject piece = boardPositions[GetPositionKeyOfPiece(button.gameObject)];
+            if (piece != null && piece.CompareTag("Goat")) selectedGoat = piece;
         }
-        if (allBlocked) Debug.Log("Goats win!");
+        else
+        {
+            string currentPos = GetPositionKeyOfPiece(selectedGoat);
+            if (IsValidGoatMove(currentPos, positionKey))
+            {
+                MoveGoat(button, positionKey);
+                isTigerTurn = true;
+                selectedGoat = null;
+            }
+            else Debug.Log("Invalid goat move!");
+        }
+    }
+
+    void MoveGoat(Button button, string positionKey)
+    {
+        string currentPos = GetPositionKeyOfPiece(selectedGoat);
+        boardPositions[currentPos] = null;
+        selectedGoat.transform.position = button.transform.position;
+        boardPositions[positionKey] = selectedGoat;
+    }
+
+    bool IsValidGoatMove(string fromPos, string toPos)
+    {
+        List<string> adjacent = GetValidAdjacentPositions(fromPos);
+        return adjacent.Contains(toPos) && boardPositions[toPos] == null;
     }
     #endregion
 
@@ -278,17 +293,10 @@ public class GameManager : MonoBehaviour
         AddIfValid(adjacent, x, y + 1);
 
         // Diagonal moves
-        if ((x == 0 && y == 0) || (x == 0 && y == 4) || (x == 4 && y == 0) || (x == 4 && y == 4))
-            AddIfValid(adjacent, 2, 2);
-        else if ((x == 2 && y == 0) || (x == 0 && y == 2) || (x == 4 && y == 2) || (x == 2 && y == 4))
-            AddIfValid(adjacent, 2, 2);
-        else if (x == 2 && y == 2)
-        {
-            AddIfValid(adjacent, 0, 0); AddIfValid(adjacent, 0, 4);
-            AddIfValid(adjacent, 4, 0); AddIfValid(adjacent, 4, 4);
-            AddIfValid(adjacent, 0, 2); AddIfValid(adjacent, 2, 0);
-            AddIfValid(adjacent, 4, 2); AddIfValid(adjacent, 2, 4);
-        }
+        AddIfValid(adjacent, x - 1, y - 1);
+        AddIfValid(adjacent, x - 1, y + 1);
+        AddIfValid(adjacent, x + 1, y - 1);
+        AddIfValid(adjacent, x + 1, y + 1);
 
         return adjacent;
     }
@@ -300,6 +308,27 @@ public class GameManager : MonoBehaviour
             string key = $"Tile_{x}_{y}";
             if (boardPositions.ContainsKey(key)) list.Add(key);
         }
+    }
+
+    void CheckWinConditions()
+    {
+        if (goatsCaptured >= 5) Debug.Log("Tigers win!");
+        else if (placedGoats == totalGoats && !IsAnyValidTigerMove()) Debug.Log("Goats win!");
+    }
+
+    bool IsAnyValidTigerMove()
+    {
+        foreach (GameObject tiger in tigers)
+        {
+            string currentPos = GetPositionKeyOfPiece(tiger);
+            if (currentPos == null) continue;
+
+            foreach (string adjacent in GetValidAdjacentPositions(currentPos))
+            {
+                if (boardPositions[adjacent] == null || IsCaptureMove(currentPos, adjacent)) return true;
+            }
+        }
+        return false;
     }
     #endregion
 }
