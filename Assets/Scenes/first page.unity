@@ -4496,7 +4496,11 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 --- !u!1 &748698632
+=======
+--- !u!1 &1101216196
+>>>>>>> Stashed changes
 =======
 --- !u!1 &1101216196
 >>>>>>> Stashed changes
@@ -4512,6 +4516,7 @@ GameObject:
   m_Component:
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   - component: {fileID: 748698635}
   - component: {fileID: 748698634}
   - component: {fileID: 748698633}
@@ -4520,11 +4525,16 @@ GameObject:
 =======
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
   - component: {fileID: 1101216198}
   - component: {fileID: 1101216197}
   m_Layer: 0
   m_Name: WhatsApp Image 2025-01-21 at 21.53.22_53a699ad
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -4533,6 +4543,7 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 --- !u!114 &748698633
@@ -4545,10 +4556,15 @@ SpriteRenderer:
 --- !u!212 &1101216197
 SpriteRenderer:
 >>>>>>> Stashed changes
+=======
+--- !u!212 &1101216197
+SpriteRenderer:
+>>>>>>> Stashed changes
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
   m_GameObject: {fileID: 748698632}
@@ -4582,6 +4598,8 @@ MonoBehaviour:
   m_DragThreshold: 10
 --- !u!4 &748698635
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
   m_GameObject: {fileID: 1101216196}
@@ -4632,6 +4650,9 @@ MonoBehaviour:
   m_SpriteSortPoint: 0
 --- !u!4 &1101216198
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -4642,8 +4663,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   m_GameObject: {fileID: 748698632}
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
   m_GameObject: {fileID: 1101216196}
@@ -4732,6 +4756,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1924442493}
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -4743,6 +4770,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 --- !u!1 &792942229
@@ -10273,11 +10301,14 @@ RectTransform:
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 746993474}
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
   - {fileID: 792942231}
@@ -10304,6 +10335,10 @@ SceneRoots:
   - {fileID: 1577633383}
   - {fileID: 249295676}
   - {fileID: 748698635}
+=======
+  - {fileID: 1924442495}
+  - {fileID: 1101216198}
+>>>>>>> Stashed changes
 =======
   - {fileID: 1924442495}
   - {fileID: 1101216198}
