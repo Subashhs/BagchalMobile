@@ -6,31 +6,8 @@ TagManager:
   tags:
   - Tiger
   - Goat
-  - Position_1_1
-  - Position_1_2
-  - Position_1_3
-  - Position_1_4
-  - Position_1_5
-  - Position_1_6
-  - Position_1_7
-  - Position_1_8
-  - Position_1_9
-  - Position_1_10
-  - Position_1_11
-  - Position_1_12
-  - Position_1_13
-  - Position_1_14
-  - Position_1_15
-  - Position_1_16
-  - Position_1_17
-  - Position_1_18
-  - Position_1_19
-  - Position_1_20
-  - Position_1_21
-  - Position_1_22
-  - Position_1_23
-  - Position_1_24
-  - Position_1_25
+  - Board
+  - BoardTile
   layers:
   - Default
   - TransparentFX

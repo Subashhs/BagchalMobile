@@ -2,28 +2,18 @@ using UnityEngine;
 
 public class PieceMovement : MonoBehaviour
 {
-    public GameObject tigerPrefab;
-    public GameObject goatPrefab;
-    private GameObject selectedPiece;
-
-    void Update()
+    // This is where you're trying to access the tiger's selection status
+    private void SomeMethod()
     {
-        // If the user clicks/taps anywhere, move the selected piece
-        if (Input.GetMouseButtonDown(0))
+        if (GameManager.Instance.IsTigerSelected())  // Using the public method to check if the tiger is selected
         {
-            Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-            // Move the selected piece to the new position
-            if (selectedPiece != null)
-            {
-                selectedPiece.transform.position = new Vector3(mousePosition.x, mousePosition.y, 0);
-            }
+            // Proceed with the tiger move logic
+            Debug.Log("Tiger is selected, proceed with movement.");
         }
-    }
-
-    // Call this method to select the tiger or goat
-    public void SelectPiece(GameObject piece)
-    {
-        selectedPiece = piece;
+        else
+        {
+            // Handle the case when no tiger is selected
+            Debug.Log("No tiger selected.");
+        }
     }
 }
