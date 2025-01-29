@@ -3,9 +3,7 @@ guid: 4db9b90503cfb48489d06676dba057f8
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences:
-  - tigerPrefab: {fileID: 265254260515623456, guid: defc59262a9e16b428ed13dda14573b3, type: 3}
-  - goatPrefab: {fileID: 1615366735830878449, guid: d233fa0fe18ebfc408326afe77fa794a, type: 3}
+  defaultReferences: []
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
