@@ -976,10 +976,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4db9b90503cfb48489d06676dba057f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  goatPrefab: {fileID: 1490390879}
+  turnIndicator: {fileID: 0}
+  goatsCapturedText: {fileID: 0}
   tigerPrefab: {fileID: 2012842198}
-  boardParent: {fileID: 0}
-  totalGoats: 20
+  goatPrefab: {fileID: 1490390879}
+  boardTiles: []
+  currentTurn: 1
 --- !u!1 &1184676826
 GameObject:
   m_ObjectHideFlags: 0
