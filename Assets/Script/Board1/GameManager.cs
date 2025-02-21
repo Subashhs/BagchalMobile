@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
 
     public TMP_Text turnIndicator;
     public TMP_Text goatsCapturedText;
+    public TMP_Text winText;
 
     public GameObject tigerPrefab;
     public GameObject goatPrefab;
@@ -23,6 +24,7 @@ public class GameManager : MonoBehaviour
 
     private List<GameObject> placedGoats = new List<GameObject>();
     private int totalGoatsPlaced = 0;  // Track number of goats placed
+    private int goatsCaptured = 0;  // Track number of goats captured
 
     private void Awake()
     {
@@ -41,6 +43,7 @@ public class GameManager : MonoBehaviour
         PopulateBoardTiles();
         UpdateTurnDisplay();
         PlaceTigers(); // Place tigers on the board at the start
+        winText.gameObject.SetActive(false); // Hide the win text initially
     }
 
     private void PopulateBoardTiles()
@@ -85,10 +88,20 @@ public class GameManager : MonoBehaviour
     {
         if (isTigerSelected)
         {
-            if (IsValidMove(selectedTiger, destinationTile))
+            if (IsValidMove(selectedTiger, destinationTile, true))
             {
+                Vector3 direction = destinationTile.transform.position - selectedTiger.transform.position;
+                Vector3 midPoint = selectedTiger.transform.position + direction / 2;
+
+                GameObject capturedGoat = GetGoatAtPosition(midPoint);
+                if (capturedGoat != null)
+                {
+                    CaptureGoat(capturedGoat);
+                }
+
                 selectedTiger.transform.position = destinationTile.transform.position;
                 DeselectTiger();
+                CheckWinCondition();
                 SwitchTurn();
             }
             else
@@ -157,11 +170,573 @@ public class GameManager : MonoBehaviour
         UpdateTurnDisplay();
     }
 
-    // Check if the move for the tiger is valid
-    private bool IsValidMove(GameObject tiger, GameObject destinationTile)
+    // Check if the move for the tiger or goat is valid
+    private bool IsValidMove(GameObject piece, GameObject destinationTile, bool isTiger)
     {
-        // For simplicity, let's assume any move is valid for now
+        Vector3 piecePosition = piece.transform.position;
+        Vector3 destinationPosition = destinationTile.transform.position;
+
+        // Define valid moves based on the piece's current position
+        switch (piecePosition)
+        {
+            case var pos when pos == boardTiles.Find(tile => tile.name == "Tile_0_0").transform.position:
+                return isTiger ? IsValidMoveFromTile_0_0(destinationPosition) : IsValidMoveFromTile_Goat_0_0(destinationPosition);
+            case var pos when pos == boardTiles.Find(tile => tile.name == "Tile_0_1").transform.position:
+                return isTiger ? IsValidMoveFromTile_0_1(destinationPosition) : IsValidMoveFromTile_Goat_0_1(destinationPosition);
+            case var pos when pos == boardTiles.Find(tile => tile.name == "Tile_0_2").transform.position:
+                return isTiger ? IsValidMoveFromTile_0_2(destinationPosition) : IsValidMoveFromTile_Goat_0_2(destinationPosition);
+            case var pos when pos == boardTiles.Find(tile => tile.name == "Tile_0_3").transform.position:
+                return isTiger ? IsValidMoveFromTile_0_3(destinationPosition) : IsValidMoveFromTile_Goat_0_3(destinationPosition);
+            case var pos when pos == boardTiles.Find(tile => tile.name == "Tile_0_4").transform.position:
+                return isTiger ? IsValidMoveFromTile_0_4(destinationPosition) : IsValidMoveFromTile_Goat_0_4(destinationPosition);
+            case var pos when pos == boardTiles.Find(tile => tile.name == "Tile_1_0").transform.position:
+                return isTiger ? IsValidMoveFromTile_1_0(destinationPosition) : IsValidMoveFromTile_Goat_1_0(destinationPosition);
+            case var pos when pos == boardTiles.Find(tile => tile.name == "Tile_1_1").transform.position:
+                return isTiger ? IsValidMoveFromTile_1_1(destinationPosition) : IsValidMoveFromTile_Goat_1_1(destinationPosition);
+            case var pos when pos == boardTiles.Find(tile => tile.name == "Tile_1_2").transform.position:
+                return isTiger ? IsValidMoveFromTile_1_2(destinationPosition) : IsValidMoveFromTile_Goat_1_2(destinationPosition);
+            case var pos when pos == boardTiles.Find(tile => tile.name == "Tile_1_3").transform.position:
+                return isTiger ? IsValidMoveFromTile_1_3(destinationPosition) : IsValidMoveFromTile_Goat_1_3(destinationPosition);
+            case var pos when pos == boardTiles.Find(tile => tile.name == "Tile_1_4").transform.position:
+                return isTiger ? IsValidMoveFromTile_1_4(destinationPosition) : IsValidMoveFromTile_Goat_1_4(destinationPosition);
+            case var pos when pos == boardTiles.Find(tile => tile.name == "Tile_2_0").transform.position:
+                return isTiger ? IsValidMoveFromTile_2_0(destinationPosition) : IsValidMoveFromTile_Goat_2_0(destinationPosition);
+            case var pos when pos == boardTiles.Find(tile => tile.name == "Tile_2_1").transform.position:
+                return isTiger ? IsValidMoveFromTile_2_1(destinationPosition) : IsValidMoveFromTile_Goat_2_1(destinationPosition);
+            case var pos when pos == boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position:
+                return isTiger ? IsValidMoveFromTile_2_2(destinationPosition) : IsValidMoveFromTile_Goat_2_2(destinationPosition);
+            case var pos when pos == boardTiles.Find(tile => tile.name == "Tile_2_3").transform.position:
+                return isTiger ? IsValidMoveFromTile_2_3(destinationPosition) : IsValidMoveFromTile_Goat_2_3(destinationPosition);
+            case var pos when pos == boardTiles.Find(tile => tile.name == "Tile_2_4").transform.position:
+                return isTiger ? IsValidMoveFromTile_2_4(destinationPosition) : IsValidMoveFromTile_Goat_2_4(destinationPosition);
+            case var pos when pos == boardTiles.Find(tile => tile.name == "Tile_3_0").transform.position:
+                return isTiger ? IsValidMoveFromTile_3_0(destinationPosition) : IsValidMoveFromTile_Goat_3_0(destinationPosition);
+            case var pos when pos == boardTiles.Find(tile => tile.name == "Tile_3_1").transform.position:
+                return isTiger ? IsValidMoveFromTile_3_1(destinationPosition) : IsValidMoveFromTile_Goat_3_1(destinationPosition);
+            case var pos when pos == boardTiles.Find(tile => tile.name == "Tile_3_2").transform.position:
+                return isTiger ? IsValidMoveFromTile_3_2(destinationPosition) : IsValidMoveFromTile_Goat_3_2(destinationPosition);
+            case var pos when pos == boardTiles.Find(tile => tile.name == "Tile_3_3").transform.position:
+                return isTiger ? IsValidMoveFromTile_3_3(destinationPosition) : IsValidMoveFromTile_Goat_3_3(destinationPosition);
+            case var pos when pos == boardTiles.Find(tile => tile.name == "Tile_3_4").transform.position:
+                return isTiger ? IsValidMoveFromTile_3_4(destinationPosition) : IsValidMoveFromTile_Goat_3_4(destinationPosition);
+            case var pos when pos == boardTiles.Find(tile => tile.name == "Tile_4_0").transform.position:
+                return isTiger ? IsValidMoveFromTile_4_0(destinationPosition) : IsValidMoveFromTile_Goat_4_0(destinationPosition);
+            case var pos when pos == boardTiles.Find(tile => tile.name == "Tile_4_1").transform.position:
+                return isTiger ? IsValidMoveFromTile_4_1(destinationPosition) : IsValidMoveFromTile_Goat_4_1(destinationPosition);
+            case var pos when pos == boardTiles.Find(tile => tile.name == "Tile_4_2").transform.position:
+                return isTiger ? IsValidMoveFromTile_4_2(destinationPosition) : IsValidMoveFromTile_Goat_4_2(destinationPosition);
+            case var pos when pos == boardTiles.Find(tile => tile.name == "Tile_4_3").transform.position:
+                return isTiger ? IsValidMoveFromTile_4_3(destinationPosition) : IsValidMoveFromTile_Goat_4_3(destinationPosition);
+            case var pos when pos == boardTiles.Find(tile => tile.name == "Tile_4_4").transform.position:
+                return isTiger ? IsValidMoveFromTile_4_4(destinationPosition) : IsValidMoveFromTile_Goat_4_4(destinationPosition);
+            default:
+                return false;
+        }
+    }
+
+    // Define valid moves for each tile
+    private bool IsValidMoveFromTile_0_0(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_0").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_1").transform.position ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_2").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_0_1").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_0_2").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_1_1").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_0").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_1_0").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_0").transform.position) == null);
+    }
+
+    private bool IsValidMoveFromTile_0_1(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_0").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_2").transform.position ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_3").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_0_2").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_0_3").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_1").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_1_1").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_1").transform.position) == null);
+    }
+
+    private bool IsValidMoveFromTile_0_2(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_2").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_3").transform.position ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_0").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_0_1").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_0_0").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_0").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_1_1").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_0").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_1_2").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_4").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_1_3").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_4").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_4").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_0_3").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_0_4").transform.position) == null);
+    }
+
+    private bool IsValidMoveFromTile_0_3(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_2").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_4").transform.position ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_1").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_0_2").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_0_1").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_3").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_1_3").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_3").transform.position) == null);
+    }
+
+    private bool IsValidMoveFromTile_0_4(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_4").transform.position ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_2").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_0_3").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_0_2").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_1_3").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_4").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_1_4").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_4").transform.position) == null);
+    }
+
+    private bool IsValidMoveFromTile_1_0(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_0").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_0").transform.position ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_0").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_0").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_3_0").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_2").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_1_1").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_1_2").transform.position) == null);
+    }
+
+    private bool IsValidMoveFromTile_1_1(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_0").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_0").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_0").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_2").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_2").transform.position ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_1").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_1").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_3_1").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_3").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_3_3").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_3").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_1_2").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_1_3").transform.position) == null);
+    }
+
+    private bool IsValidMoveFromTile_1_2(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_2").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_3").transform.position ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_0").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_1_1").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_1_0").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_2").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_3_2").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_4").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_1_3").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_1_4").transform.position) == null);
+    }
+
+    private bool IsValidMoveFromTile_1_3(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_2").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_4").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_4").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_4").transform.position ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_1").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_1_2").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_1_1").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_1").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_3_1").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_3").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_3").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_3_3").transform.position) == null);
+    }
+
+    private bool IsValidMoveFromTile_1_4(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_4").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_4").transform.position ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_2").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_1_3").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_1_2").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_4").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_4").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_3_4").transform.position) == null);
+    }
+
+    private bool IsValidMoveFromTile_2_0(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_0").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_0").transform.position ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_2").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_1_1").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_0_2").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_1").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_2").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_3_1").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_4_2").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_0").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_3_0").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_4_0").transform.position) == null);
+    }
+
+    private bool IsValidMoveFromTile_2_1(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_0").transform.position ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_3").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_3").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_1").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_3_1").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_4_1").transform.position) == null);
+    }
+
+    private bool IsValidMoveFromTile_2_2(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_2").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_2").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_1").transform.position ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_0").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_1_1").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_0_0").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_2").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_0_2").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_1_2").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_4").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_1_3").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_0_4").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_4").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_3").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_4").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_4").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_3_3").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_4_4").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_2").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_3_2").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_4_2").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_0").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_3_1").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_4_0").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_0").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_1").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_0").transform.position) == null);
+    }
+
+    private bool IsValidMoveFromTile_2_3(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_4").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_3").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_1_3").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_0_3").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_3").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_3_3").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_4_3").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_1").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_1").transform.position) == null);
+    }
+
+    private bool IsValidMoveFromTile_2_4(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_4").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_4").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_3").transform.position ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_2").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_1_3").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_0_2").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_4").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_1_4").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_0_4").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_4").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_3_4").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_4_4").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_2").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_3_3").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_4_2").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_3").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position) == null);
+    }
+
+    private bool IsValidMoveFromTile_3_0(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_0").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_0").transform.position ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_0").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_0").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_1_0").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_2").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_3_1").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_3_2").transform.position) == null);
+    }
+
+    private bool IsValidMoveFromTile_3_1(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_0").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_2").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_2").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_0").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_0").transform.position ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_1").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_1").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_1_1").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_3").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_1_3").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_3").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_3_2").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_3_3").transform.position) == null);
+    }
+
+    private bool IsValidMoveFromTile_3_2(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_2").transform.position ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_0").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_3_1").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_3_0").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_2").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_1_2").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_4").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_3_3").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_3_4").transform.position) == null);
+    }
+
+    private bool IsValidMoveFromTile_3_3(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_2").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_4").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_4").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_2").transform.position ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_1").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_3_2").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_3_1").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_1").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_1_1").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_3").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_3").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_1_3").transform.position) == null);
+    }
+
+    private bool IsValidMoveFromTile_3_4(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_4").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_4").transform.position ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_2").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_3_3").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_3_2").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_4").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_4").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_1_4").transform.position) == null);
+    }
+
+    private bool IsValidMoveFromTile_4_0(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_0").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_1").transform.position ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_0").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_3_0").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_0").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_3_1").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_2").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_4_1").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_4_2").transform.position) == null);
+    }
+
+    private bool IsValidMoveFromTile_4_1(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_0").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_2").transform.position ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_1").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_3_1").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_1").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_3").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_4_2").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_4_3").transform.position) == null);
+    }
+
+    private bool IsValidMoveFromTile_4_2(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_2").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_3").transform.position ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_0").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_4_1").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_4_0").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_0").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_3_1").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_0").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_3_2").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_4").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_3_3").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_4").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_4").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_4_3").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_4_4").transform.position) == null);
+    }
+
+    private bool IsValidMoveFromTile_4_3(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_2").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_4").transform.position ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_1").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_4_2").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_4_1").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_3").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_3_3").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_3").transform.position) == null);
+    }
+
+    private bool IsValidMoveFromTile_4_4(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_4").transform.position ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_2").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_4_3").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_4_2").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_3_3").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position) == null) ||
+               (destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_4").transform.position &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_3_4").transform.position) != null &&
+                GetGoatAtPosition(boardTiles.Find(tile => tile.name == "Tile_2_4").transform.position) == null);
+    }
+
+    // Capture a goat
+    private void CaptureGoat(GameObject goat)
+    {
+        placedGoats.Remove(goat);
+        Destroy(goat);
+        goatsCaptured++;
+        goatsCapturedText.text = "Goats Captured: " + goatsCaptured;
+    }
+
+    // Get the goat at a specific position
+    private GameObject GetGoatAtPosition(Vector3 position)
+    {
+        foreach (var goat in placedGoats)
+        {
+            if (goat.transform.position == position)
+                return goat;
+        }
+        return null;
+    }
+
+    // Check for win conditions
+    private void CheckWinCondition()
+    {
+        if (goatsCaptured >= 5)
+        {
+            winText.text = "Tigers Win!";
+            winText.gameObject.SetActive(true);
+            // Handle win condition for tigers
+        }
+
+        if (AreAllTigersBlocked())
+        {
+            winText.text = "Goats Win!";
+            winText.gameObject.SetActive(true);
+            // Handle win condition for goats
+        }
+    }
+
+    // Check if all tigers are blocked
+    private bool AreAllTigersBlocked()
+    {
+        foreach (var tiger in GameObject.FindGameObjectsWithTag("Tiger"))
+        {
+            if (HasValidMoves(tiger))
+                return false;
+        }
         return true;
+    }
+
+    // Check if a tiger has any valid moves
+    private bool HasValidMoves(GameObject tiger)
+    {
+        foreach (var tile in boardTiles)
+        {
+            if (IsValidMove(tiger, tile, true))
+                return true;
+        }
+        return false;
     }
 
     // Start Goat movement after all goats are placed
@@ -169,7 +744,7 @@ public class GameManager : MonoBehaviour
     {
         if (currentTurn == Turn.Goat && selectedGoat != null)
         {
-            if (IsTileAvailable(destinationTile))
+            if (IsValidMove(selectedGoat, destinationTile, false))
             {
                 selectedGoat.transform.position = destinationTile.transform.position;
                 selectedGoat = null;  // Deselect the goat after move
@@ -177,7 +752,7 @@ public class GameManager : MonoBehaviour
             }
             else
             {
-                Debug.Log("Tile is already occupied by a tiger or another goat.");
+                Debug.Log("Invalid move");
             }
         }
     }
@@ -189,6 +764,217 @@ public class GameManager : MonoBehaviour
         {
             selectedGoat = goat;
         }
+    }
+
+    // Define valid moves for each goat tile
+    private bool IsValidMoveFromTile_Goat_0_0(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_0").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_1").transform.position;
+    }
+
+    private bool IsValidMoveFromTile_Goat_0_1(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_0").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_2").transform.position;
+    }
+
+    private bool IsValidMoveFromTile_Goat_0_2(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_2").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_3").transform.position;
+    }
+
+    private bool IsValidMoveFromTile_Goat_0_3(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_2").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_4").transform.position;
+    }
+
+    private bool IsValidMoveFromTile_Goat_0_4(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_4").transform.position;
+    }
+
+    private bool IsValidMoveFromTile_Goat_1_0(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_0").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_0").transform.position;
+    }
+
+    private bool IsValidMoveFromTile_Goat_1_1(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_0").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_0").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_0").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_2").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_2").transform.position;
+    }
+
+    private bool IsValidMoveFromTile_Goat_1_2(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_2").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_3").transform.position;
+    }
+
+    private bool IsValidMoveFromTile_Goat_1_3(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_2").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_4").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_4").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_4").transform.position;
+    }
+
+    private bool IsValidMoveFromTile_Goat_1_4(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_0_4").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_4").transform.position;
+    }
+
+    private bool IsValidMoveFromTile_Goat_2_0(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_0").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_0").transform.position;
+    }
+
+    private bool IsValidMoveFromTile_Goat_2_1(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_0").transform.position;
+    }
+
+    private bool IsValidMoveFromTile_Goat_2_2(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_2").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_2").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_1").transform.position;
+    }
+
+    private bool IsValidMoveFromTile_Goat_2_3(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_4").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position;
+    }
+
+    private bool IsValidMoveFromTile_Goat_2_4(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_4").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_4").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_1_3").transform.position;
+    }
+
+    private bool IsValidMoveFromTile_Goat_3_0(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_0").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_0").transform.position;
+    }
+
+    private bool IsValidMoveFromTile_Goat_3_1(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_0").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_2").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_2").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_0").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_0").transform.position;
+    }
+
+    private bool IsValidMoveFromTile_Goat_3_2(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_2").transform.position;
+    }
+
+    private bool IsValidMoveFromTile_Goat_3_3(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_2").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_2").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_4").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_4").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_2").transform.position;
+    }
+
+    private bool IsValidMoveFromTile_Goat_3_4(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_2_4").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_4").transform.position;
+    }
+
+    private bool IsValidMoveFromTile_Goat_4_0(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_0").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_1").transform.position;
+    }
+
+    private bool IsValidMoveFromTile_Goat_4_1(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_0").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_2").transform.position;
+    }
+
+    private bool IsValidMoveFromTile_Goat_4_2(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_1").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_2").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_3").transform.position;
+    }
+
+    private bool IsValidMoveFromTile_Goat_4_3(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_2").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_4").transform.position;
+    }
+
+    private bool IsValidMoveFromTile_Goat_4_4(Vector3 destinationPosition)
+    {
+        return destinationPosition == boardTiles.Find(tile => tile.name == "Tile_4_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_3").transform.position ||
+               destinationPosition == boardTiles.Find(tile => tile.name == "Tile_3_4").transform.position;
     }
 
     // Getter methods for board and placed goats
