@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-
-using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro;
@@ -23,6 +21,7 @@ public class GameManagerBoard2 : MonoBehaviour
     public GameObject tiger;
     public List<GameObject> goats = new List<GameObject>();
 
+    private GoatMovementB2 goatMovement;
 
     private void Awake()
     {
@@ -35,6 +34,9 @@ public class GameManagerBoard2 : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+
+        // Ensure we have the GoatMovementB2 script attached to the Goat prefab
+        goatMovement = goatPrefab.GetComponent<GoatMovementB2>();
     }
 
     private void Start()
@@ -107,6 +109,7 @@ public class GameManagerBoard2 : MonoBehaviour
     {
         if (selectedTiger != null && currentTurn == Turn.Tiger && tiles.ContainsValue(tile))
         {
+            // Move Tiger (Same as before)
             selectedTiger.transform.position = tile.transform.position;
             Debug.Log("Tiger moved.");
             selectedTiger = null;
@@ -115,11 +118,18 @@ public class GameManagerBoard2 : MonoBehaviour
         }
         else if (selectedGoat != null && currentTurn == Turn.Goat && tiles.ContainsValue(tile))
         {
-            selectedGoat.transform.position = tile.transform.position;
-            Debug.Log("Goat moved.");
-            selectedGoat = null;
-            currentTurn = Turn.Tiger;
-            UpdateTurnText();
+            // Try to move Goat using the GoatMovementB2 script
+            if (goatMovement.TryMove(selectedGoat, tile, tiles))
+            {
+                // Successfully moved the goat
+                selectedGoat = null;
+                currentTurn = Turn.Tiger;
+                UpdateTurnText();
+            }
+            else
+            {
+                Debug.LogWarning("Invalid move for the Goat.");
+            }
         }
         else
         {

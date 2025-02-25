@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 public class TigerMovementB2 : MonoBehaviour
 {
-    // Define valid moves for the tiger.
     private Dictionary<string, List<string>> validMoves = new Dictionary<string, List<string>>()
     {
         { "Tile_0_0", new List<string> { "Tile_1_2", "Tile_1_0", "Tile_1_1" } },
@@ -18,7 +17,6 @@ public class TigerMovementB2 : MonoBehaviour
         { "Tile_3_2", new List<string> { "Tile_3_1" } }
     };
 
-    // Define special jump moves for capturing goats.
     private Dictionary<string, string> jumpMoves = new Dictionary<string, string>()
     {
         { "Tile_0_0|Tile_1_0", "Tile_2_0" },
@@ -36,14 +34,12 @@ public class TigerMovementB2 : MonoBehaviour
         string currentTile = GetTileName(tiger.transform.position, boardTiles);
         string targetTileName = targetTile.name;
 
-        // Check if the target tile is different from the current tile
         if (currentTile == targetTileName)
         {
             Debug.LogWarning($"Cannot move tiger to the same tile: {currentTile}.");
             return false;
         }
 
-        // Check if the target tile is a valid move from the current tile
         if (validMoves.ContainsKey(currentTile) && validMoves[currentTile].Contains(targetTileName))
         {
             if (!IsTileOccupied(targetTile))
@@ -109,7 +105,7 @@ public class TigerMovementB2 : MonoBehaviour
         return null;
     }
 
-    private string GetTileName(Vector3 position, Dictionary<string, GameObject> boardTiles)
+    public string GetTileName(Vector3 position, Dictionary<string, GameObject> boardTiles)
     {
         foreach (var tile in boardTiles)
         {
@@ -120,7 +116,7 @@ public class TigerMovementB2 : MonoBehaviour
         return string.Empty;
     }
 
-    private bool IsTileOccupied(GameObject tile)
+    public bool IsTileOccupied(GameObject tile)
     {
         foreach (var goat in GameManagerBoard2.Instance.goats)
         {
