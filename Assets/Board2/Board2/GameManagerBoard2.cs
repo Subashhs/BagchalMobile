@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro;
@@ -129,7 +131,7 @@ public class GameManagerBoard2 : MonoBehaviour
     {
         if (turnText != null)
         {
-            turnText.text = (currentTurn == Turn.Tiger) ? "Tiger's Turn" : "Goat's Turn";
+            turnText.text = (currentTurn == Turn.Tiger) ? "TIGERS MOVE" : "GOATS MOVE";
         }
     }
 }
