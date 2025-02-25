@@ -18,7 +18,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Board1.unity
     guid: 38b7d1806c132eb4386b0464a2f20da4
   - enabled: 1
-    path: Assets/Scenes/Board2.unity
+    path: Assets/Board2/Board2.unity
     guid: 6d5a3a927eb18884cb17007f1579e9cb
   - enabled: 1
     path: Assets/Scenes/Board3.unity
