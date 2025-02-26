@@ -1,21 +1,23 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class TigerMovementB2 : MonoBehaviour
+public class TigerMovementB3 : MonoBehaviour
 {
     private Dictionary<string, List<string>> validMoves = new Dictionary<string, List<string>>()
     {
         { "Tile_0_0", new List<string> { "Tile_1_2", "Tile_1_0", "Tile_1_1" } },
         { "Tile_1_0", new List<string> { "Tile_0_0", "Tile_1_1", "Tile_2_0" } },
-        { "Tile_1_1", new List<string> { "Tile_1_0", "Tile_1_1", "Tile_0_0" } },
-
+        { "Tile_1_1", new List<string> { "Tile_0_0", "Tile_1_0", "Tile_1_2" } },
         { "Tile_1_2", new List<string> { "Tile_0_0", "Tile_1_1", "Tile_2_2" } },
         { "Tile_2_0", new List<string> { "Tile_1_0", "Tile_2_1" } },
         { "Tile_2_1", new List<string> { "Tile_2_0", "Tile_2_2", "Tile_3_1" } },
         { "Tile_2_2", new List<string> { "Tile_1_2", "Tile_2_1" } },
         { "Tile_3_0", new List<string> { "Tile_3_1" } },
-        { "Tile_3_1", new List<string> { "Tile_2_1", "Tile_3_0", "Tile_3_2" } },
-        { "Tile_3_2", new List<string> { "Tile_3_1" } }
+        { "Tile_3_1", new List<string> { "Tile_2_1", "Tile_3_0", "Tile_3_2", "Tile_4_1" } },
+        { "Tile_3_2", new List<string> { "Tile_3_1" } },
+        { "Tile_4_0", new List<string> { "Tile_4_1" } },
+        { "Tile_4_1", new List<string> { "Tile_3_1", "Tile_4_0", "Tile_4_2" } },
+        { "Tile_4_2", new List<string> { "Tile_4_1" } },
     };
 
     private Dictionary<string, string> jumpMoves = new Dictionary<string, string>()
@@ -27,8 +29,12 @@ public class TigerMovementB2 : MonoBehaviour
         { "Tile_2_0|Tile_1_0", "Tile_0_0" },
         { "Tile_2_0|Tile_2_1", "Tile_2_2" },
         { "Tile_2_2|Tile_2_1", "Tile_2_0" },
+        { "Tile_2_1|Tile_3_1", "Tile_4_1" },
         { "Tile_3_0|Tile_3_1", "Tile_3_2" },
-        { "Tile_3_2|Tile_3_1", "Tile_3_0" }
+        { "Tile_3_2|Tile_3_1", "Tile_3_0" },
+        { "Tile_4_0|Tile_4_1", "Tile_4_2" },
+        { "Tile_4_1|Tile_3_1", "Tile_2_1" },
+        { "Tile_4_2|Tile_4_1", "Tile_4_0" },
     };
 
     public bool TryMove(GameObject tiger, GameObject targetTile, Dictionary<string, GameObject> boardTiles)
@@ -62,7 +68,7 @@ public class TigerMovementB2 : MonoBehaviour
             if (middleGoat != null)
             {
                 Destroy(middleGoat);
-                GameManagerBoard2.Instance.goats.Remove(middleGoat);
+                GameManagerBoard3.Instance.goats.Remove(middleGoat);
                 tiger.transform.position = targetTile.transform.position;
                 Debug.Log($"Tiger jumped from {currentTile} to {targetTileName}, capturing goat at {middleTile}.");
                 return true;
@@ -97,9 +103,9 @@ public class TigerMovementB2 : MonoBehaviour
 
     private GameObject GetGoatAtTile(string tileName)
     {
-        foreach (var goat in GameManagerBoard2.Instance.goats)
+        foreach (var goat in GameManagerBoard3.Instance.goats)
         {
-            if (GetTileName(goat.transform.position, GameManagerBoard2.Instance.tiles) == tileName)
+            if (GetTileName(goat.transform.position, GameManagerBoard3.Instance.tiles) == tileName)
             {
                 return goat;
             }
@@ -120,15 +126,15 @@ public class TigerMovementB2 : MonoBehaviour
 
     public bool IsTileOccupied(GameObject tile)
     {
-        foreach (var goat in GameManagerBoard2.Instance.goats)
+        foreach (var goat in GameManagerBoard3.Instance.goats)
         {
             if (Vector3.Distance(goat.transform.position, tile.transform.position) < 0.1f)
             {
                 return true;
             }
         }
-        if (GameManagerBoard2.Instance.tiger != null &&
-            Vector3.Distance(GameManagerBoard2.Instance.tiger.transform.position, tile.transform.position) < 0.1f)
+        if (GameManagerBoard3.Instance.tiger != null &&
+            Vector3.Distance(GameManagerBoard3.Instance.tiger.transform.position, tile.transform.position) < 0.1f)
         {
             return true;
         }

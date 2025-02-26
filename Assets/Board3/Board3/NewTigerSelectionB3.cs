@@ -4,11 +4,15 @@ public class NewTigerSelectionB3 : MonoBehaviour
 {
     private void OnMouseDown()
     {
-        if (GameManagerBoard3.Instance == null) return;
-
-        if (GameManagerBoard3.Instance.currentTurn == GameManagerBoard3.Turn.Tiger)
+        if (GameManagerBoard3.Instance == null)
         {
-            GameManagerBoard3.Instance.SelectTiger(gameObject);
+            Debug.LogError("GameManagerBoard2 instance is not initialized.");
+            return;
         }
+
+        Debug.Log("Tiger clicked.");
+
+        // Select the tiger
+        GameManagerBoard3.Instance.SelectPiece(gameObject);
     }
 }

@@ -4,22 +4,24 @@ public class NewBoardManagerB3 : MonoBehaviour
 {
     private void OnMouseDown()
     {
-        if (GameManagerBoard3.Instance == null) return;
-
-        // Tiger Movement
-        if (GameManagerBoard3.Instance.currentTurn == GameManagerBoard3.Turn.Tiger && GameManagerBoard3.Instance.IsTigerSelected())
+        if (GameManagerBoard3.Instance == null)
         {
-            GameManagerBoard3.Instance.MoveTiger(gameObject);
+            Debug.LogError("GameManagerBoard2 instance is not initialized.");
             return;
         }
 
-        // Goat Movement
-        if (GameManagerBoard3.Instance.currentTurn == GameManagerBoard3.Turn.Goat)
+        Debug.Log("Tile or Piece clicked.");
+
+        // Check if a piece is already selected
+        if (GameManagerBoard3.Instance.IsPieceSelected())
         {
-            if (GameManagerBoard3.Instance.GetSelectedGoat() != null)
-            {
-                GameManagerBoard3.Instance.MoveGoat(gameObject);
-            }
+            // Move the selected piece
+            GameManagerBoard3.Instance.MovePiece(gameObject);
+        }
+        else
+        {
+            // Select the piece
+            GameManagerBoard3.Instance.SelectPiece(gameObject);
         }
     }
 }

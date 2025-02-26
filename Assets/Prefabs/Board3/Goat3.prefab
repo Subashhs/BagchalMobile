@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 5593549591289381312}
   - component: {fileID: 1003000711269753576}
   - component: {fileID: 9214583326742102859}
-  - component: {fileID: -6229540906216323369}
+  - component: {fileID: -3025687137397772213}
+  - component: {fileID: 1878625260266438645}
   m_Layer: 0
   m_Name: Goat3
   m_TagString: Goat
@@ -157,9 +158,9 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 2.62, y: 1.93}
+  m_Size: {x: 8, y: 16}
   m_EdgeRadius: 0
---- !u!114 &-6229540906216323369
+--- !u!114 &-3025687137397772213
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -168,6 +169,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 5289304734942892482}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d9b59371d021bc740a27282b1b4131da, type: 3}
+  m_Script: {fileID: 11500000, guid: 07556b7bebec01e4ea8e4b17f39a20cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1878625260266438645
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5289304734942892482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69f9e9b266900c54699c5f0a8e2e67e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
