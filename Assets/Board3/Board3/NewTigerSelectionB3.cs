@@ -6,13 +6,12 @@ public class NewTigerSelectionB3 : MonoBehaviour
     {
         if (GameManagerBoard3.Instance == null)
         {
-            Debug.LogError("GameManagerBoard2 instance is not initialized.");
+            Debug.LogError("GameManagerBoard3 instance is not initialized.");
             return;
         }
 
         Debug.Log("Tiger clicked.");
 
-        // Select the tiger
         GameManagerBoard3.Instance.SelectPiece(gameObject);
     }
 }

@@ -1,18 +1,18 @@
 using UnityEngine;
 
-public class NewTigerSelection : MonoBehaviour
+public class TigerSelection : MonoBehaviour
 {
     private void OnMouseDown()
     {
-        if (GameManagerBoard.Instance == null)
+        if (GameManager.Instance == null)
         {
-            Debug.LogError("GameManagerBoard2 instance is not initialized.");
+            Debug.LogError("GameManager instance is not initialized.");
             return;
         }
 
         Debug.Log("Tiger clicked.");
 
         // Select the tiger
-        GameManagerBoard.Instance.SelectPiece(gameObject);
+        GameManager.Instance.SelectPiece(gameObject);
     }
 }

@@ -30,13 +30,11 @@ public class TigerMovement : MonoBehaviour
         { "Tile_4_2", new List<string> { "Tile_3_1", "Tile_3_2", "Tile_3_3", "Tile_4_1", "Tile_4_3" } },
         { "Tile_4_3", new List<string> { "Tile_3_3", "Tile_4_2", "Tile_4_4" } },
         { "Tile_4_4", new List<string> { "Tile_3_3", "Tile_3_4", "Tile_4_3" } }
-
-
     };
 
     private Dictionary<string, string> jumpMoves = new Dictionary<string, string>()
     {
-        { "Tile_0_0|Tile_0_1", "Tile_0_2" },
+         { "Tile_0_0|Tile_0_1", "Tile_0_2" },
         { "Tile_0_0|Tile_1_1", "Tile_2_2" },
         { "Tile_0_0|Tile_1_0", "Tile_2_0" },
         { "Tile_0_1|Tile_0_2", "Tile_3_0" },
@@ -49,7 +47,7 @@ public class TigerMovement : MonoBehaviour
         { "Tile_0_3|Tile_1_3", "Tile_2_3" },
         { "Tile_0_4|Tile_0_3", "Tile_0_2" },
         { "Tile_0_4|Tile_1_3", "Tile_2_2" },
-        { "Tile_0_4|Tile_1_3", "Tile_2_4" },
+        { "Tile_0_4|Tile_1_4", "Tile_2_4" },
         { "Tile_1_0|Tile_1_1", "Tile_1_2" },
         { "Tile_1_0|Tile_2_0", "Tile_3_0" },
         { "Tile_1_1|Tile_1_2", "Tile_1_3" },
@@ -114,14 +112,7 @@ public class TigerMovement : MonoBehaviour
         { "Tile_4_4|Tile_3_3", "Tile_2_2" },
         { "Tile_4_4|Tile_3_4", "Tile_2_4" },
         { "Tile_4_4|Tile_4_3", "Tile_4_2" },
-
-
     };
-
-    public bool HasValidMove(string currentTile)
-    {
-        return validMoves.ContainsKey(currentTile) && validMoves[currentTile].Count > 0;
-    }
 
     public bool TryMove(GameObject tiger, GameObject targetTile, Dictionary<string, GameObject> boardTiles)
     {
@@ -154,7 +145,7 @@ public class TigerMovement : MonoBehaviour
             if (middleGoat != null)
             {
                 Destroy(middleGoat);
-                GameManagerBoard.Instance.goats.Remove(middleGoat);
+                GameManager.Instance.goats.Remove(middleGoat);
                 tiger.transform.position = targetTile.transform.position;
                 Debug.Log($"Tiger jumped from {currentTile} to {targetTileName}, capturing goat at {middleTile}.");
                 return true;
@@ -189,9 +180,9 @@ public class TigerMovement : MonoBehaviour
 
     private GameObject GetGoatAtTile(string tileName)
     {
-        foreach (var goat in GameManagerBoard.Instance.goats)
+        foreach (var goat in GameManager.Instance.goats)
         {
-            if (GetTileName(goat.transform.position, GameManagerBoard.Instance.tiles) == tileName)
+            if (GetTileName(goat.transform.position, GameManager.Instance.tiles) == tileName)
             {
                 return goat;
             }
@@ -212,7 +203,7 @@ public class TigerMovement : MonoBehaviour
 
     public bool IsTileOccupied(GameObject tile)
     {
-        foreach (var goat in GameManagerBoard2.Instance.goats)
+        foreach (var goat in GameManager.Instance.goats)
         {
             if (Vector3.Distance(goat.transform.position, tile.transform.position) < 0.1f)
             {
@@ -220,7 +211,7 @@ public class TigerMovement : MonoBehaviour
             }
         }
         if (GameManagerBoard2.Instance.tiger != null &&
-            Vector3.Distance(GameManagerBoard2.Instance.tiger.transform.position, tile.transform.position) < 0.1f)
+            Vector3.Distance(GameManager.Instance.tiger.transform.position, tile.transform.position) < 0.1f)
         {
             return true;
         }

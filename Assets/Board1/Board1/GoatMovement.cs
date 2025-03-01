@@ -33,6 +33,7 @@ public class GoatMovement : MonoBehaviour
         { "Tile_4_4", new List<string> { "Tile_3_3", "Tile_3_4", "Tile_4_3" } }
     };
 
+
     // Try to move the goat to the target tile
     public bool TryMove(GameObject goat, GameObject targetTile, Dictionary<string, GameObject> boardTiles)
     {
@@ -85,7 +86,7 @@ public class GoatMovement : MonoBehaviour
     // Check if the target tile is occupied by any piece
     private bool IsTileOccupied(GameObject tile)
     {
-        foreach (var goat in GameManagerBoard.Instance.goats)
+        foreach (var goat in GameManager.Instance.goats)
         {
             if (Vector3.Distance(goat.transform.position, tile.transform.position) < 0.1f)
             {
@@ -94,8 +95,8 @@ public class GoatMovement : MonoBehaviour
         }
 
         // Check if the tiger is occupying the tile
-        if (GameManagerBoard.Instance.tigerPrefab != null &&
-            Vector3.Distance(GameManagerBoard.Instance.tigerPrefab.transform.position, tile.transform.position) < 0.1f)
+        if (GameManager.Instance.tiger != null &&
+            Vector3.Distance(GameManager.Instance.tiger.transform.position, tile.transform.position) < 0.1f)
         {
             return true;  // The tile is occupied by a tiger
         }

@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using UnityEngine.SceneManagement;  // For scene management
+using UnityEngine.SceneManagement;
 using TMPro;
 using System.Collections.Generic;
 
@@ -11,7 +11,7 @@ public class GameManagerBoard3 : MonoBehaviour
     public Turn currentTurn = Turn.Goat;
 
     public TMP_Text turnText;
-    public TMP_Text winText;  // Text to show the winner
+    public TMP_Text winText;
 
     public GameObject tigerPrefab;
     public GameObject goatPrefab;
@@ -25,7 +25,7 @@ public class GameManagerBoard3 : MonoBehaviour
     private GoatMovementB3 goatMovement;
     private TigerMovementB3 tigerMovement;
 
-    private bool tigerCapturedGoat = false;  // Track if the Tiger has captured a Goat
+    private bool tigerCapturedGoat = false;
 
     private void Awake()
     {
@@ -87,6 +87,8 @@ public class GameManagerBoard3 : MonoBehaviour
 
     public void SelectPiece(GameObject piece)
     {
+        Debug.Log($"Attempting to select piece: {piece.name}");
+
         if (currentTurn == Turn.Tiger && piece == tiger)
         {
             selectedTiger = piece;
@@ -110,6 +112,8 @@ public class GameManagerBoard3 : MonoBehaviour
 
     public void MovePiece(GameObject tile)
     {
+        Debug.Log($"Attempting to move piece to tile: {tile.name}");
+
         if (selectedTiger != null && currentTurn == Turn.Tiger && tiles.ContainsValue(tile))
         {
             if (tigerMovement.TryMove(selectedTiger, tile, tiles))
@@ -146,16 +150,14 @@ public class GameManagerBoard3 : MonoBehaviour
 
     private void CheckForWinCondition()
     {
-        // Check if Tiger captured a Goat
         if (!tigerCapturedGoat && goats.Count < 3)
         {
             tigerCapturedGoat = true;
             winText.text = "TIGER WINS! CAPTURED A GOAT!";
-            Invoke("ReturnToOptionBoard", 3f);  // Wait 3 seconds to show the win message before transitioning
+            Invoke("ReturnToOptionBoard", 3f);
             return;
         }
 
-        // Check if Tiger is blocked by 3 Goats (Goats win)
         if (IsTigerBlocked())
         {
             winText.text = "GOATS WIN! TIGER IS BLOCKED!";
@@ -165,15 +167,14 @@ public class GameManagerBoard3 : MonoBehaviour
 
     private bool IsTigerBlocked()
     {
-        // Check if all valid moves for the Tiger are blocked by goats
         foreach (var tile in tiles.Values)
         {
             if (!tigerMovement.IsTileOccupied(tile))
             {
-                return false;  // If there's at least one valid unoccupied tile, the tiger is not blocked
+                return false;
             }
         }
-        return true;  // If no valid moves are available, the tiger is blocked
+        return true;
     }
 
     public void UpdateTurnText()

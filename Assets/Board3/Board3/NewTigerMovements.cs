@@ -42,6 +42,8 @@ public class TigerMovementB3 : MonoBehaviour
         string currentTile = GetTileName(tiger.transform.position, boardTiles);
         string targetTileName = targetTile.name;
 
+        Debug.Log($"Attempting to move tiger from {currentTile} to {targetTileName}.");
+
         if (currentTile == targetTileName)
         {
             Debug.LogWarning($"Cannot move tiger to the same tile: {currentTile}.");
@@ -81,6 +83,7 @@ public class TigerMovementB3 : MonoBehaviour
 
         return false;
     }
+
 
     private bool CanJumpAndCapture(string fromTile, string toTile)
     {

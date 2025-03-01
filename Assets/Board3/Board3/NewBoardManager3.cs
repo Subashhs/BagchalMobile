@@ -6,22 +6,20 @@ public class NewBoardManagerB3 : MonoBehaviour
     {
         if (GameManagerBoard3.Instance == null)
         {
-            Debug.LogError("GameManagerBoard2 instance is not initialized.");
+            Debug.LogError("GameManagerBoard3 instance is not initialized.");
             return;
         }
 
-        Debug.Log("Tile or Piece clicked.");
+        Debug.Log("Tile or Piece clicked: " + gameObject.name);
 
-        // Check if a piece is already selected
         if (GameManagerBoard3.Instance.IsPieceSelected())
         {
-            // Move the selected piece
             GameManagerBoard3.Instance.MovePiece(gameObject);
         }
         else
         {
-            // Select the piece
             GameManagerBoard3.Instance.SelectPiece(gameObject);
         }
     }
 }
+    

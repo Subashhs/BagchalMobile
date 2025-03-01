@@ -4,24 +4,24 @@ public class BoardManager : MonoBehaviour
 {
     private void OnMouseDown()
     {
-        if (GameManagerBoard.Instance == null)
+        if (GameManager.Instance == null)
         {
-            Debug.LogError("GameManagerBoard2 instance is not initialized.");
+            Debug.LogError("GameManage instance is not initialized.");
             return;
         }
 
         Debug.Log("Tile or Piece clicked.");
 
         // Check if a piece is already selected
-        if (GameManagerBoard.Instance.IsPieceSelected())
+        if (GameManager.Instance.IsPieceSelected())
         {
             // Move the selected piece
-            GameManagerBoard.Instance.MovePiece(gameObject);
+            GameManager.Instance.MovePiece(gameObject);
         }
         else
         {
             // Select the piece
-            GameManagerBoard.Instance.SelectPiece(gameObject);
+            GameManager.Instance.SelectPiece(gameObject);
         }
     }
 }

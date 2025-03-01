@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 public class GoatMovementB3 : MonoBehaviour
 {
-    // Define valid moves for the goat. These are the exact tiles the goat can move to from each tile.
     private Dictionary<string, List<string>> validMoves = new Dictionary<string, List<string>>()
     {
         { "Tile_0_0", new List<string> { "Tile_1_2", "Tile_1_0", "Tile_1_1" } },
@@ -21,26 +20,21 @@ public class GoatMovementB3 : MonoBehaviour
         { "Tile_4_2", new List<string> { "Tile_4_1" } }
     };
 
-    // Try to move the goat to the target tile
     public bool TryMove(GameObject goat, GameObject targetTile, Dictionary<string, GameObject> boardTiles)
     {
-        string currentTile = GetTileName(goat.transform.position, boardTiles); // Get the current tile name
-        string targetTileName = targetTile.name; // Get the name of the target tile
+        string currentTile = GetTileName(goat.transform.position, boardTiles);
+        string targetTileName = targetTile.name;
 
-        // If the target tile is the same as the current tile, return false
         if (currentTile == targetTileName)
         {
             Debug.LogWarning($"Cannot move goat to the same tile: {currentTile}.");
             return false;
         }
 
-        // Check if the target tile is a valid move from the current tile
         if (validMoves.ContainsKey(currentTile) && validMoves[currentTile].Contains(targetTileName))
         {
-            // Check if the target tile is occupied
             if (!IsTileOccupied(targetTile))
             {
-                // Move the goat to the target tile
                 goat.transform.position = targetTile.transform.position;
                 Debug.Log($"Goat moved from {currentTile} to {targetTileName}.");
                 return true;
@@ -52,42 +46,39 @@ public class GoatMovementB3 : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning($"Invalid move for goat from {currentTile} to {targetTileName}. This move is not allowed.");
+            Debug.LogWarning($"Invalid move for goat from {currentTile} to {targetTileName}.");
         }
 
         return false;
     }
 
-    // Get the name of the tile based on the position
     private string GetTileName(Vector3 position, Dictionary<string, GameObject> boardTiles)
     {
         foreach (var tile in boardTiles)
         {
             if (Vector3.Distance(tile.Value.transform.position, position) < 0.1f)
-                return tile.Key;  // Return the name of the tile if the position is close enough
+                return tile.Key;
         }
         Debug.LogError("Goat position does not match any tile.");
         return string.Empty;
     }
 
-    // Check if the target tile is occupied by any piece
     private bool IsTileOccupied(GameObject tile)
     {
         foreach (var goat in GameManagerBoard3.Instance.goats)
         {
             if (Vector3.Distance(goat.transform.position, tile.transform.position) < 0.1f)
             {
-                return true;  // The tile is occupied by a goat
+                return true;
             }
         }
 
-        // Check if the tiger is occupying the tile
         if (GameManagerBoard3.Instance.tiger != null &&
             Vector3.Distance(GameManagerBoard3.Instance.tiger.transform.position, tile.transform.position) < 0.1f)
         {
-            return true;  // The tile is occupied by the tiger
+            return true;
         }
 
-        return false;  // The tile is not occupied
+        return false;
     }
 }

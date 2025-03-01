@@ -16,16 +16,13 @@ EditorBuildSettings:
     guid: fe33627d57584ba43ad08696bd833e2c
   - enabled: 1
     path: Assets/Board1/Board1.unity
-    guid: 38b7d1806c132eb4386b0464a2f20da4
-  - enabled: 1
-    path: Assets/Board2/Board2.unity
     guid: 6d5a3a927eb18884cb17007f1579e9cb
   - enabled: 1
-    path: Assets/Scenes/Board3.unity
-    guid: 444cbeac08bb20f49b8f73d8d74968da
-  - enabled: 0
-    path: Assets/Scenes/2ndPAGE.unity
-    guid: 38bbff59c786581418eee9a881de8ec6
+    path: Assets/Board2/Board2.unity
+    guid: 6c3c6a7ed20b36c4cbb46e203b041b80
+  - enabled: 1
+    path: Assets/Board3/Board3.unity
+    guid: c0e674bea23519b4a914d5edfa6bedcc
   m_configObjects:
     com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: 9927efa4e2438894180b55b3d9f0fda8, type: 2}
     com.unity.adaptiveperformance.samsung.android.provider_settings: {fileID: 11400000, guid: d09c382d9c3d7e240a558d79f3fcd42d, type: 2}

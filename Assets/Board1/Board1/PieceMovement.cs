@@ -15,47 +15,47 @@ public class PieceMovement : MonoBehaviour
     private void OnMouseDown()
     {
         // Check if the GameManagerBoard2 instance exists
-        if (GameManagerBoard.Instance == null)
+        if (GameManager.Instance == null)
         {
-            Debug.LogError("GameManagerBoard2 instance is not initialized.");
+            Debug.LogError("GameManager instance is not initialized.");
             return;
         }
 
         Debug.Log("Tile or Piece clicked.");
 
         // Check if a piece is already selected
-        if (GameManagerBoard.Instance.IsPieceSelected())
+        if (GameManager.Instance.IsPieceSelected())
         {
             // Handle movement based on the current turn (Tiger or Goat)
-            if (GameManagerBoard.Instance.currentTurn == GameManagerBoard.Turn.Tiger &&
-                GameManagerBoard.Instance.selectedTiger != null)
+            if (GameManager.Instance.currentTurn == GameManager.Turn.Tiger &&
+                GameManager.Instance.selectedTiger != null)
             {
                 // Try moving the tiger
-                if (tigerMovement.TryMove(GameManagerBoard.Instance.selectedTiger, gameObject, GameManagerBoard.Instance.tiles))
+                if (tigerMovement.TryMove(GameManager.Instance.selectedTiger, gameObject, GameManager.Instance.tiles))
                 {
                     // Successfully moved the tiger
-                    GameManagerBoard.Instance.selectedTiger = null;  // Deselect the tiger
-                    GameManagerBoard.Instance.currentTurn = GameManagerBoard.Turn.Goat;  // Switch to Goat's turn
-                    GameManagerBoard.Instance.UpdateTurnText();  // Update the UI
+                    GameManager.Instance.selectedTiger = null;  // Deselect the tiger
+                    GameManager.Instance.currentTurn = GameManager.Turn.Goat;  // Switch to Goat's turn
+                    GameManager.Instance.UpdateTurnText();  // Update the UI
                 }
             }
-            else if (GameManagerBoard.Instance.currentTurn == GameManagerBoard.Turn.Goat &&
-                     GameManagerBoard.Instance.selectedGoat != null)
+            else if (GameManager.Instance.currentTurn == GameManager.Turn.Goat &&
+                     GameManager.Instance.selectedGoat != null)
             {
                 // Try moving the goat
-                if (goatMovement.TryMove(GameManagerBoard.Instance.selectedGoat, gameObject, GameManagerBoard.Instance.tiles))
+                if (goatMovement.TryMove(GameManager.Instance.selectedGoat, gameObject, GameManager.Instance.tiles))
                 {
                     // Successfully moved the goat
-                    GameManagerBoard.Instance.selectedGoat = null;  // Deselect the goat
-                    GameManagerBoard.Instance.currentTurn = GameManagerBoard.Turn.Tiger;  // Switch to Tiger's turn
-                    GameManagerBoard.Instance.UpdateTurnText();  // Update the UI
+                    GameManager.Instance.selectedGoat = null;  // Deselect the goat
+                    GameManager.Instance.currentTurn = GameManager.Turn.Tiger;  // Switch to Tiger's turn
+                    GameManager.Instance.UpdateTurnText();  // Update the UI
                 }
             }
         }
         else
         {
             // Select the piece (goat or tiger)
-            GameManagerBoard.Instance.SelectPiece(gameObject);
+            GameManager.Instance.SelectPiece(gameObject);
         }
     }
 }
