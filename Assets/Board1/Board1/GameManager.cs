@@ -1,30 +1,32 @@
-﻿using UnityEngine;
-using UnityEngine.SceneManagement; // Needed for scene management
+using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance { get; private set; }
+    public static GameManager Instance;
 
-    public enum Turn { Tiger, Goat }
-    public Turn currentTurn = Turn.Goat;
-
-    public TMP_Text turnText;
-    public TMP_Text winText;  // Text to show the winner
+    public TMP_Text turnIndicator;
+    public TMP_Text goatsCapturedText;
+    public TMP_Text winText;
 
     public GameObject tigerPrefab;
     public GameObject goatPrefab;
 
-    private List<GameObject> tigers = new List<GameObject>(); // Store tiger instances
-    private List<GameObject> goats = new List<GameObject>();
+    public List<GameObject> boardTiles = new List<GameObject>();
 
-    public GameObject selectedTiger;
-    public GameObject selectedGoat;
-    public Dictionary<string, GameObject> tiles = new Dictionary<string, GameObject>();
+    private bool isTigerSelected = false;
+    private GameObject selectedTiger = null;
+    private GameObject selectedGoat = null;
 
-    private GoatMovement goatMovement;
-    private bool allGoatsPlaced = false;  // Track if all goats have been placed
+    public enum Turn { Tiger, Goat }
+    public Turn currentTurn = Turn.Goat;  // Goat starts first
+
+    private List<GameObject> placedGoats = new List<GameObject>();
+    private int totalGoatsPlaced = 0;  // Track number of goats placed
+    private int goatsCaptured = 0;  // Track number of goats captured
 
     private void Awake()
     {
@@ -35,139 +37,320 @@ public class GameManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
-            return;
         }
-
-        goatMovement = goatPrefab.GetComponent<GoatMovement>();
     }
 
     private void Start()
     {
-        InitializeBoard();
-        UpdateTurnText();
+        PopulateBoardTiles();
+        UpdateTurnDisplay();
+        PlaceTigers(); // Place tigers on the board at the start
+        winText.gameObject.SetActive(false); // Hide win text at the start
     }
 
-    private void InitializeBoard()
+    private void PopulateBoardTiles()
     {
-        // Define tile names and instantiate the board structure
-        string[] tileNames = {
-            "Tile_0_0", "Tile_0_1", "Tile_0_2", "Tile_0_3", "Tile_0_4",
-            "Tile_1_0", "Tile_1_1", "Tile_1_2", "Tile_1_3", "Tile_1_4",
-            "Tile_2_0", "Tile_2_1", "Tile_2_2", "Tile_2_3", "Tile_2_4",
-            "Tile_3_1", "Tile_3_2", "Tile_3_3", "Tile_3_4", "Tile_3_0",
-            "Tile_4_0", "Tile_4_1", "Tile_4_2", "Tile_4_3", "Tile_4_4"
+        boardTiles.AddRange(GameObject.FindGameObjectsWithTag("BoardTile"));
+    }
+
+    private void UpdateTurnDisplay()
+    {
+        turnIndicator.text = currentTurn == Turn.Tiger ? "Tiger's Turn" : "Goat's Turn";
+        goatsCapturedText.text = "Goats Captured: " + goatsCaptured;
+    }
+
+    // Place the tigers at the four corners at the start of the game
+    private void PlaceTigers()
+    {
+        Vector3[] tigerStartPositions = new Vector3[]
+        {
+            GetTilePosition("Tile_0_0"),
+            GetTilePosition("Tile_0_4"),
+            GetTilePosition("Tile_4_0"),
+            GetTilePosition("Tile_4_4")
         };
 
-        foreach (string tileName in tileNames)
+        foreach (Vector3 position in tigerStartPositions)
         {
-            GameObject tile = GameObject.Find(tileName);
-            if (tile != null)
+            Instantiate(tigerPrefab, position, Quaternion.identity);
+        }
+    }
+
+    // Select a tiger to move
+    public void SelectTiger(GameObject tiger)
+    {
+        Debug.Log("Selecting tiger: " + tiger.name);
+        if (currentTurn == Turn.Tiger && !isTigerSelected)
+        {
+            selectedTiger = tiger;
+            isTigerSelected = true;
+        }
+    }
+
+    // Move the selected tiger to the new tile
+    public void MoveTiger(GameObject destinationTile)
+    {
+        if (isTigerSelected)
+        {
+            Debug.Log("Moving tiger to: " + destinationTile.name);
+            if (selectedTiger == null)
             {
-                tiles[tileName] = tile;
-                Debug.Log($"Tile {tileName} found.");
+                Debug.LogError("selectedTiger is null!");
+                return;
+            }
+            if (destinationTile == null)
+            {
+                Debug.LogError("destinationTile is null!");
+                return;
+            }
+
+            string currentTile = GetTileName(selectedTiger.transform.position);
+            string destinationTileName = destinationTile.name;
+
+            Debug.Log("Current tile: " + currentTile + ", Destination tile: " + destinationTileName);
+
+            TigerMovement tigerMovement = selectedTiger.GetComponent<TigerMovement>();
+
+            if (tigerMovement == null)
+            {
+                Debug.LogError("TigerMovement component is missing on selectedTiger!");
+                return;
+            }
+
+            if (tigerMovement.IsValidMove(currentTile, destinationTileName))
+            {
+                selectedTiger.transform.position = destinationTile.transform.position;
+                DeselectTiger();
+                SwitchTurn();
+            }
+            else if (tigerMovement.IsValidCapture(currentTile, destinationTileName, out string goatTile))
+            {
+                selectedTiger.transform.position = destinationTile.transform.position;
+                CaptureGoat(goatTile);
+                DeselectTiger();
+                SwitchTurn();
             }
             else
             {
-                Debug.LogError($"Tile {tileName} not found!");
+                Debug.Log("Invalid move");
+            }
+        }
+    }
+
+    // Capture a goat and update the count
+    private void CaptureGoat(string goatTile)
+    {
+        Vector3 goatPosition = GetTilePosition(goatTile);
+        GameObject capturedGoat = placedGoats.Find(goat => goat.transform.position == goatPosition);
+        placedGoats.Remove(capturedGoat);
+        Destroy(capturedGoat);
+
+        // Update the captured goats count
+        goatsCaptured++;
+        UpdateTurnDisplay();
+
+        // Check for tiger win condition
+        if (goatsCaptured >= 5)
+        {
+            EndGame("Tigers Win!");
+        }
+    }
+
+    // Select a goat to place on the board (Goat Placement)
+    public void PlaceGoat(GameObject destinationTile)
+    {
+        if (currentTurn == Turn.Goat && totalGoatsPlaced < 20)
+        {
+            if (IsTileAvailable(destinationTile))
+            {
+                GameObject goat = Instantiate(goatPrefab, destinationTile.transform.position, Quaternion.identity);
+                placedGoats.Add(goat);
+                totalGoatsPlaced++;
+                SwitchTurn();
+            }
+            else
+            {
+                Debug.Log("Tile is already occupied by a tiger or another goat.");
             }
         }
 
-        // Instantiate Tigers at specified locations
-        for (int i = 0; i < 4; i++)
+        if (totalGoatsPlaced >= 20)
         {
-            GameObject tiger = Instantiate(tigerPrefab, tiles[$"Tile_{i / 2}_0{(i % 2) * 4}"].transform.position, Quaternion.identity);
-            tigers.Add(tiger);
+            // Once 20 goats are placed, allow goat movement
+            currentTurn = Turn.Goat;
+            UpdateTurnDisplay();
         }
-
-        Debug.Log("4 Tigers instantiated.");
-
-        // Prepare for placement of Goats
-        currentTurn = Turn.Goat; // Start with Goat's turn
     }
 
-    public GameObject[] GetTigers() => tigers.ToArray(); // Return array of tigers
-
-    public void PlaceGoat(GameObject tile)
+    // Start Goat movement after all goats are placed
+    public void MoveGoat(GameObject destinationTile)
     {
-        if (!allGoatsPlaced && currentTurn == Turn.Goat && goats.Count < 20)
+        if (currentTurn == Turn.Goat && selectedGoat != null)
         {
-            if (tiles.ContainsValue(tile) && tile.GetComponent<Tile>()?.IsOccupied() == false)
+            string currentTile = GetTileName(selectedGoat.transform.position);
+            string destinationTileName = destinationTile.name;
+
+            GoatMovement goatMovement = selectedGoat.GetComponent<GoatMovement>();
+
+            if (goatMovement.IsValidMove(currentTile, destinationTileName))
             {
-                GameObject goat = Instantiate(goatPrefab, tile.transform.position, Quaternion.identity);
-                goats.Add(goat);
-                tile.GetComponent<Tile>().SetOccupied(true); // Assume Tile script manages occupied state
+                selectedGoat.transform.position = destinationTile.transform.position;
+                selectedGoat = null;  // Deselect the goat after move
+                SwitchTurn();  // Switch turn to the tiger
+            }
+            else
+            {
+                Debug.Log("Invalid move");
+            }
+        }
+    }
 
-                Debug.Log($"Goat instantiated at {tile.name}.");
+    // Select a goat for moving (only after 20 goats are placed)
+    public void SelectGoat(GameObject goat)
+    {
+        if (currentTurn == Turn.Goat && totalGoatsPlaced >= 20 && selectedGoat == null)
+        {
+            selectedGoat = goat;
+        }
+    }
 
-                if (goats.Count == 20)
+    // Check if the tile is available for placing a goat
+    private bool IsTileAvailable(GameObject tile)
+    {
+        // Check if tile is already occupied by a tiger or another goat
+        foreach (var goat in placedGoats)
+        {
+            if (goat.transform.position == tile.transform.position)
+                return false;
+        }
+
+        foreach (var tiger in GameObject.FindGameObjectsWithTag("Tiger"))
+        {
+            if (tiger.transform.position == tile.transform.position)
+                return false;
+        }
+
+        return true;
+    }
+
+    // After the tiger moves, deselect it
+    private void DeselectTiger()
+    {
+        isTigerSelected = false;
+        selectedTiger = null;
+        CheckGoatWinCondition();
+    }
+
+    // Switch turns between Tiger and Goat
+    private void SwitchTurn()
+    {
+        currentTurn = currentTurn == Turn.Tiger ? Turn.Goat : Turn.Tiger;
+        UpdateTurnDisplay();
+    }
+
+    // Check for goat win condition
+    private void CheckGoatWinCondition()
+    {
+        bool allMovesBlocked = true;
+
+        foreach (var tiger in GameObject.FindGameObjectsWithTag("Tiger"))
+        {
+            string currentTile = GetTileName(tiger.transform.position);
+            TigerMovement tigerMovement = tiger.GetComponent<TigerMovement>();
+
+            if (tigerMovement == null)
+            {
+                Debug.LogError("TigerMovement component is missing on tiger!");
+                continue;
+            }
+
+            foreach (var tile in boardTiles)
+            {
+                if (tile != null && tigerMovement.IsValidMove(currentTile, tile.name))
                 {
-                    allGoatsPlaced = true; // All goats have been placed, can now move
+                    allMovesBlocked = false;
+                    break;
                 }
-
-                currentTurn = Turn.Tiger; // Switch turn after placing
-                UpdateTurnText();
             }
-            else
+
+            if (!allMovesBlocked) break;
+        }
+
+        if (allMovesBlocked)
+        {
+            EndGame("Goats Win!");
+        }
+    }
+
+    private void EndGame(string result)
+    {
+        winText.text = result;
+        winText.gameObject.SetActive(true);
+        turnIndicator.gameObject.SetActive(false);
+        StartCoroutine(LoadOptionBoardScene());
+    }
+
+    private IEnumerator LoadOptionBoardScene()
+    {
+        yield return new WaitForSeconds(3); // Wait for 3 seconds before switching scenes
+        SceneManager.LoadScene("OptionBoard");
+    }
+
+    // Get the tile name from the position
+    public string GetTileName(Vector3 position)
+    {
+        foreach (var tile in boardTiles)
+        {
+            if (tile.transform.position == position)
+                return tile.name;
+        }
+        return null;
+    }
+
+    // Get the tile position from the name
+    public Vector3 GetTilePosition(string tileName)
+    {
+        GameObject tile = boardTiles.Find(t => t.name == tileName);
+        if (tile != null)
+        {
+            return tile.transform.position;
+        }
+        return Vector3.zero;
+    }
+
+    // Check if there is a goat at the given position
+    public bool IsGoatAtPosition(Vector3 position)
+    {
+        foreach (var goat in placedGoats)
+        {
+            if (goat.transform.position == position)
             {
-                Debug.LogWarning("Cannot place goat here, tile is occupied or invalid.");
+                return true;
             }
         }
+        return false;
     }
 
-    public void SelectPiece(GameObject piece)
+    // Getter methods for board and placed goats
+    public List<GameObject> GetBoardTiles()
     {
-        if (currentTurn == Turn.Tiger && tigers.Contains(piece)) // Check for Tigers
-        {
-            selectedTiger = piece;
-            Debug.Log("Tiger selected.");
-        }
-        else if (currentTurn == Turn.Goat && goats.Contains(piece)) // Check for Goats
-        {
-            selectedGoat = piece;
-            Debug.Log("Goat selected.");
-        }
-        else
-        {
-            Debug.LogWarning("Invalid selection for the current turn.");
-        }
+        return boardTiles;
     }
 
-    public bool IsPieceSelected()
+    public List<GameObject> GetPlacedGoats()
     {
-        return selectedTiger != null || selectedGoat != null;
+        return placedGoats;
     }
 
-    public void MovePiece(GameObject tile)
+    // Is a tiger currently selected?
+    public bool IsTigerSelected()
     {
-        if (selectedGoat != null && currentTurn == Turn.Goat && allGoatsPlaced && tiles.ContainsValue(tile))
-        {
-            if (goatMovement.TryMove(selectedGoat, tile, tiles))
-            {
-                selectedGoat = null; // Deselect the goat after moving
-                currentTurn = Turn.Tiger; // Switch to Tiger's turn
-                UpdateTurnText();
-            }
-            else
-            {
-                Debug.LogWarning("Invalid move for the Goat.");
-            }
-        }
-        else if (selectedTiger != null && currentTurn == Turn.Tiger && tiles.ContainsValue(tile))
-        {
-            // Placeholder for Tiger movement logic
-            Debug.LogWarning("Tiger movement logic not implemented in this version.");
-        }
-        else
-        {
-            Debug.LogWarning("Invalid move attempt.");
-        }
+        return isTigerSelected;
     }
 
-    public void UpdateTurnText()
+    // Get the currently selected goat
+    public GameObject GetSelectedGoat()
     {
-        if (turnText != null)
-        {
-            turnText.text = (currentTurn == Turn.Tiger) ? "TIGER'S MOVE" : "GOAT'S MOVE";
-        }
+        return selectedGoat;
     }
 }

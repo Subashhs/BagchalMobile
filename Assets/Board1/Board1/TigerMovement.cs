@@ -3,217 +3,97 @@ using System.Collections.Generic;
 
 public class TigerMovement : MonoBehaviour
 {
-    private Dictionary<string, List<string>> validMoves = new Dictionary<string, List<string>>()
+    private Dictionary<string, List<string>> validMoves;
+    private Dictionary<string, List<(string, string)>> captureMoves;
+
+    private void Start()
     {
-        { "Tile_0_0", new List<string> { "Tile_0_1", "Tile_1_0", "Tile_1_1" } },
-        { "Tile_0_1", new List<string> { "Tile_0_0", "Tile_0_2", "Tile_1_1" } },
-        { "Tile_0_2", new List<string> { "Tile_0_1", "Tile_0_3", "Tile_1_1", "Tile_1_2", "Tile_1_3" } },
-        { "Tile_0_3", new List<string> { "Tile_0_2", "Tile_0_4", "Tile_1_3" } },
-        { "Tile_0_4", new List<string> { "Tile_0_3", "Tile_1_3", "Tile_1_4" } },
-        { "Tile_1_0", new List<string> { "Tile_0_0", "Tile_1_1", "Tile_2_0" } },
-        { "Tile_1_1", new List<string> { "Tile_0_0", "Tile_0_1", "Tile_0_2", "Tile_1_0", "Tile_1_2", "Tile_2_0", "Tile_2_1", "Tile_2_2" } },
-        { "Tile_1_2", new List<string> { "Tile_0_2", "Tile_1_1", "Tile_2_2", "Tile_1_3" } },
-        { "Tile_1_3", new List<string> { "Tile_0_2", "Tile_0_3", "Tile_0_4", "Tile_1_2", "Tile_1_4", "Tile_2_2", "Tile_2_3", "Tile_2_4" } },
-        { "Tile_1_4", new List<string> { "Tile_0_4", "Tile_1_3", "Tile_2_4" } },
-        { "Tile_2_0", new List<string> { "Tile_1_0", "Tile_1_1", "Tile_2_1", "Tile_3_0", "Tile_3_1" } },
-        { "Tile_2_1", new List<string> { "Tile_1_1", "Tile_2_0", "Tile_2_2", "Tile_3_1" } },
-        { "Tile_2_2", new List<string> { "Tile_1_1", "Tile_1_2", "Tile_1_3", "Tile_2_1", "Tile_2_3", "Tile_3_1", "Tile_3_2", "Tile_3_3" } },
-        { "Tile_2_3", new List<string> { "Tile_1_3", "Tile_2_2", "Tile_2_4", "Tile_3_3" } },
-        { "Tile_2_4", new List<string> { "Tile_1_3", "Tile_1_4", "Tile_2_3", "Tile_3_3", "Tile_3_4" } },
-        { "Tile_3_0", new List<string> { "Tile_2_0", "Tile_3_1", "Tile_4_0" } },
-        { "Tile_3_1", new List<string> { "Tile_2_0", "Tile_2_1", "Tile_2_2", "Tile_3_0", "Tile_3_2", "Tile_4_0", "Tile_4_1", "Tile_4_2" } },
-        { "Tile_3_2", new List<string> { "Tile_2_2", "Tile_3_1", "Tile_3_3", "Tile_4_2" } },
-        { "Tile_3_3", new List<string> { "Tile_2_2", "Tile_2_3", "Tile_2_4", "Tile_3_2", "Tile_3_4", "Tile_4_2", "Tile_4_3", "Tile_4_4" } },
-        { "Tile_3_4", new List<string> { "Tile_2_4", "Tile_3_3", "Tile_4_4" } },
-        { "Tile_4_0", new List<string> { "Tile_3_0", "Tile_3_1", "Tile_4_1" } },
-        { "Tile_4_1", new List<string> { "Tile_3_1", "Tile_4_0", "Tile_4_2" } },
-        { "Tile_4_2", new List<string> { "Tile_3_1", "Tile_3_2", "Tile_3_3", "Tile_4_1", "Tile_4_3" } },
-        { "Tile_4_3", new List<string> { "Tile_3_3", "Tile_4_2", "Tile_4_4" } },
-        { "Tile_4_4", new List<string> { "Tile_3_3", "Tile_3_4", "Tile_4_3" } }
-    };
+        InitializeMoveDictionaries();
+    }
 
-    private Dictionary<string, string> jumpMoves = new Dictionary<string, string>()
+    private void InitializeMoveDictionaries()
     {
-         { "Tile_0_0|Tile_0_1", "Tile_0_2" },
-        { "Tile_0_0|Tile_1_1", "Tile_2_2" },
-        { "Tile_0_0|Tile_1_0", "Tile_2_0" },
-        { "Tile_0_1|Tile_0_2", "Tile_3_0" },
-        { "Tile_0_1|Tile_1_1", "Tile_2_1" },
-        { "Tile_0_2|Tile_0_3", "Tile_0_4" },
-        { "Tile_0_2|Tile_1_1", "Tile_2_0" },
-        { "Tile_0_2|Tile_1_2", "Tile_2_2" },
-        { "Tile_0_2|Tile_1_3", "Tile_2_4" },
-        { "Tile_0_3|Tile_0_2", "Tile_0_1" },
-        { "Tile_0_3|Tile_1_3", "Tile_2_3" },
-        { "Tile_0_4|Tile_0_3", "Tile_0_2" },
-        { "Tile_0_4|Tile_1_3", "Tile_2_2" },
-        { "Tile_0_4|Tile_1_4", "Tile_2_4" },
-        { "Tile_1_0|Tile_1_1", "Tile_1_2" },
-        { "Tile_1_0|Tile_2_0", "Tile_3_0" },
-        { "Tile_1_1|Tile_1_2", "Tile_1_3" },
-        { "Tile_1_1|Tile_2_2", "Tile_3_3" },
-        { "Tile_1_1|Tile_2_1", "Tile_3_1" },
-        { "Tile_1_2|Tile_1_1", "Tile_1_0" },
-        { "Tile_1_2|Tile_1_3", "Tile_1_4" },
-        { "Tile_1_2|Tile_2_2", "Tile_3_2" },
-        { "Tile_1_3|Tile_1_2", "Tile_1_1" },
-        { "Tile_1_3|Tile_2_2", "Tile_3_1" },
-        { "Tile_1_3|Tile_2_3", "Tile_3_3" },
-        { "Tile_1_4|Tile_1_3", "Tile_1_2" },
-        { "Tile_1_4|Tile_2_4", "Tile_3_4" },
-        { "Tile_2_0|Tile_1_1", "Tile_0_2" },
-        { "Tile_2_0|Tile_2_1", "Tile_2_2" },
-        { "Tile_2_0|Tile_3_1", "Tile_4_2" },
-        { "Tile_2_0|Tile_3_0", "Tile_4_0" },
-        { "Tile_2_1|Tile_1_1", "Tile_0_1" },
-        { "Tile_2_1|Tile_2_2", "Tile_2_3" },
-        { "Tile_2_1|Tile_3_1", "Tile_4_1" },
-        { "Tile_2_2|Tile_1_1", "Tile_0_0" },
-        { "Tile_2_2|Tile_1_2", "Tile_0_2" },
-        { "Tile_2_2|Tile_1_3", "Tile_0_4" },
-        { "Tile_2_2|Tile_2_3", "Tile_2_4" },
-        { "Tile_2_2|Tile_3_3", "Tile_4_4" },
-        { "Tile_2_2|Tile_3_2", "Tile_4_2" },
-        { "Tile_2_2|Tile_3_1", "Tile_4_0" },
-        { "Tile_2_2|Tile_2_1", "Tile_2_0" },
-        { "Tile_2_3|Tile_1_3", "Tile_0_3" },
-        { "Tile_2_3|Tile_3_3", "Tile_4_3" },
-        { "Tile_2_3|Tile_2_2", "Tile_2_1" },
-        { "Tile_2_4|Tile_1_3", "Tile_0_2" },
-        { "Tile_2_4|Tile_1_4", "Tile_0_4" },
-        { "Tile_2_4|Tile_3_4", "Tile_4_4" },
-        { "Tile_2_4|Tile_3_3", "Tile_4_2" },
-        { "Tile_2_4|Tile_2_3", "Tile_2_2" },
-        { "Tile_3_0|Tile_2_0", "Tile_1_0" },
-        { "Tile_3_0|Tile_3_1", "Tile_3_2" },
-        { "Tile_3_1|Tile_2_1", "Tile_1_1" },
-        { "Tile_3_1|Tile_2_2", "Tile_1_3" },
-        { "Tile_3_1|Tile_3_2", "Tile_3_3" },
-        { "Tile_3_2|Tile_2_2", "Tile_1_2" },
-        { "Tile_3_2|Tile_3_3", "Tile_3_4" },
-        { "Tile_3_2|Tile_3_1", "Tile_3_0" },
-        { "Tile_3_3|Tile_2_2", "Tile_1_1" },
-        { "Tile_3_3|Tile_2_3", "Tile_1_3" },
-        { "Tile_3_3|Tile_3_2", "Tile_3_1" },
-        { "Tile_3_4|Tile_2_4", "Tile_1_4" },
-        { "Tile_3_4|Tile_3_3", "Tile_3_2" },
-        { "Tile_4_0|Tile_3_0", "Tile_2_0" },
-        { "Tile_4_0|Tile_3_1", "Tile_2_2" },
-        { "Tile_4_0|Tile_4_1", "Tile_4_2" },
-        { "Tile_4_1|Tile_3_1", "Tile_2_1" },
-        { "Tile_4_1|Tile_4_2", "Tile_4_3" },
-        { "Tile_4_2|Tile_3_1", "Tile_2_0" },
-        { "Tile_4_2|Tile_3_2", "Tile_2_2" },
-        { "Tile_4_2|Tile_3_3", "Tile_2_4" },
-        { "Tile_4_2|Tile_4_3", "Tile_4_4" },
-        { "Tile_4_2|Tile_4_1", "Tile_4_0" },
-        { "Tile_4_3|Tile_3_3", "Tile_2_3" },
-        { "Tile_4_2|Tile_4_2", "Tile_4_1" },
-        { "Tile_4_4|Tile_3_3", "Tile_2_2" },
-        { "Tile_4_4|Tile_3_4", "Tile_2_4" },
-        { "Tile_4_4|Tile_4_3", "Tile_4_2" },
-    };
+        validMoves = new Dictionary<string, List<string>>
+        {
+            { "Tile_0_0", new List<string> { "Tile_0_1", "Tile_1_0", "Tile_1_1" } },
+            { "Tile_0_1", new List<string> { "Tile_0_0", "Tile_1_1", "Tile_0_2" } },
+            { "Tile_0_2", new List<string> { "Tile_0_1", "Tile_1_1", "Tile_1_2", "Tile_1_3", "Tile_0_3" } },
+            { "Tile_0_3", new List<string> { "Tile_0_2", "Tile_1_3", "Tile_0_4" } },
+            { "Tile_0_4", new List<string> { "Tile_0_3", "Tile_1_3", "Tile_1_4" } },
+            { "Tile_1_0", new List<string> { "Tile_0_0", "Tile_1_1", "Tile_2_0" } },
+            { "Tile_1_1", new List<string> { "Tile_0_1", "Tile_0_0", "Tile_1_0", "Tile_2_0", "Tile_2_1", "Tile_2_2", "Tile_1_2", "Tile_0_2" } },
+            { "Tile_1_2", new List<string> { "Tile_0_2", "Tile_1_1", "Tile_2_2", "Tile_1_3" } },
+            { "Tile_1_3", new List<string> { "Tile_0_3", "Tile_1_2", "Tile_2_2", "Tile_2_3", "Tile_2_4", "Tile_1_4", "Tile_0_4" } },
+            { "Tile_1_4", new List<string> { "Tile_0_4", "Tile_1_3", "Tile_2_4" } },
+            { "Tile_2_0", new List<string> { "Tile_1_0", "Tile_1_1", "Tile_2_1", "Tile_3_1", "Tile_3_0" } },
+            { "Tile_2_1", new List<string> { "Tile_1_1", "Tile_2_2", "Tile_3_1", "Tile_2_0" } },
+            { "Tile_2_2", new List<string> { "Tile_1_1", "Tile_1_2", "Tile_1_3", "Tile_2_3", "Tile_3_3", "Tile_3_2", "Tile_3_1", "Tile_2_1" } },
+            { "Tile_2_3", new List<string> { "Tile_1_3", "Tile_2_4", "Tile_3_3", "Tile_2_2" } },
+            { "Tile_2_4", new List<string> { "Tile_1_4", "Tile_3_4", "Tile_3_3", "Tile_2_3", "Tile_1_3" } },
+            { "Tile_3_0", new List<string> { "Tile_2_0", "Tile_3_1", "Tile_4_0" } },
+            { "Tile_3_1", new List<string> { "Tile_2_0", "Tile_2_1", "Tile_2_2", "Tile_3_2", "Tile_4_2", "Tile_4_1", "Tile_4_0", "Tile_3_0" } },
+            { "Tile_3_2", new List<string> { "Tile_3_1", "Tile_2_2", "Tile_3_3", "Tile_4_2" } },
+            { "Tile_3_3", new List<string> { "Tile_3_2", "Tile_2_2", "Tile_2_3", "Tile_3_4", "Tile_4_4", "Tile_4_3", "Tile_4_2" } },
+            { "Tile_3_4", new List<string> { "Tile_3_3", "Tile_2_4", "Tile_4_4" } },
+            { "Tile_4_0", new List<string> { "Tile_3_0", "Tile_3_1", "Tile_4_1" } },
+            { "Tile_4_1", new List<string> { "Tile_4_0", "Tile_3_1", "Tile_4_2" } },
+            { "Tile_4_2", new List<string> { "Tile_4_1", "Tile_3_1", "Tile_3_2", "Tile_3_3", "Tile_4_3" } },
+            { "Tile_4_3", new List<string> { "Tile_4_2", "Tile_3_3", "Tile_4_4" } },
+            { "Tile_4_4", new List<string> { "Tile_4_3", "Tile_3_3", "Tile_3_4" } }
+        };
 
-    public bool TryMove(GameObject tiger, GameObject targetTile, Dictionary<string, GameObject> boardTiles)
+        captureMoves = new Dictionary<string, List<(string, string)>>
+        {
+            { "Tile_0_0", new List<(string, string)> { ("Tile_0_1", "Tile_0_2"), ("Tile_1_1", "Tile_2_2"), ("Tile_1_0", "Tile_2_0") } },
+            { "Tile_0_1", new List<(string, string)> { ("Tile_0_2", "Tile_0_3"), ("Tile_1_1", "Tile_2_1") } },
+            { "Tile_0_2", new List<(string, string)> { ("Tile_0_1", "Tile_0_0"), ("Tile_1_1", "Tile_2_0"), ("Tile_1_2", "Tile_2_2"), ("Tile_1_3", "Tile_2_4"), ("Tile_0_3", "Tile_0_4") } },
+            { "Tile_0_3", new List<(string, string)> { ("Tile_0_2", "Tile_0_1"), ("Tile_1_3", "Tile_2_3") } },
+            { "Tile_0_4", new List<(string, string)> { ("Tile_0_3", "Tile_0_2"), ("Tile_1_3", "Tile_2_2"), ("Tile_1_4", "Tile_2_4") } },
+            { "Tile_1_0", new List<(string, string)> { ("Tile_2_0", "Tile_3_0"), ("Tile_1_1", "Tile_1_2") } },
+            { "Tile_1_1", new List<(string, string)> { ("Tile_2_1", "Tile_3_1"), ("Tile_2_2", "Tile_3_3"), ("Tile_1_2", "Tile_1_3") } },
+            { "Tile_1_2", new List<(string, string)> { ("Tile_1_1", "Tile_1_0"), ("Tile_2_2", "Tile_3_2"), ("Tile_1_3", "Tile_1_4") } },
+            { "Tile_1_3", new List<(string, string)> { ("Tile_1_2", "Tile_1_1"), ("Tile_2_2", "Tile_3_1"), ("Tile_2_3", "Tile_3_3") } },
+            { "Tile_1_4", new List<(string, string)> { ("Tile_1_3", "Tile_1_2"), ("Tile_2_4", "Tile_3_4") } },
+            { "Tile_2_0", new List<(string, string)> { ("Tile_1_1", "Tile_0_2"), ("Tile_2_1", "Tile_2_2"), ("Tile_3_1", "Tile_4_2"), ("Tile_3_0", "Tile_4_0") } },
+            { "Tile_2_1", new List<(string, string)> { ("Tile_2_2", "Tile_2_3"), ("Tile_3_1", "Tile_4_1") } },
+            { "Tile_2_2", new List<(string, string)> { ("Tile_1_1", "Tile_0_0"), ("Tile_1_2", "Tile_0_2"), ("Tile_1_3", "Tile_0_4"), ("Tile_2_3", "Tile_2_4"), ("Tile_3_3", "Tile_4_4"), ("Tile_3_2", "Tile_4_2"), ("Tile_3_1", "Tile_4_0"), ("Tile_2_1", "Tile_2_0") } },
+            { "Tile_2_3", new List<(string, string)> { ("Tile_1_3", "Tile_0_3"), ("Tile_3_3", "Tile_4_3"), ("Tile_2_2", "Tile_2_1") } },
+            { "Tile_2_4", new List<(string, string)> { ("Tile_1_3", "Tile_0_2"), ("Tile_1_4", "Tile_0_4"), ("Tile_3_4", "Tile_4_4"), ("Tile_3_3", "Tile_4_2"), ("Tile_2_3", "Tile_2_2") } },
+            { "Tile_3_0", new List<(string, string)> { ("Tile_2_0", "Tile_1_0"), ("Tile_3_1", "Tile_3_2") } },
+            { "Tile_3_1", new List<(string, string)> { ("Tile_2_1", "Tile_1_1"), ("Tile_2_2", "Tile_1_3"), ("Tile_3_2", "Tile_3_3") } },
+            { "Tile_3_2", new List<(string, string)> { ("Tile_3_1", "Tile_3_0"), ("Tile_2_2", "Tile_1_2"), ("Tile_3_3", "Tile_3_4") } },
+            { "Tile_3_3", new List<(string, string)> { ("Tile_3_2", "Tile_3_1"), ("Tile_2_2", "Tile_1_1"), ("Tile_2_3", "Tile_1_3") } },
+            { "Tile_3_4", new List<(string, string)> { ("Tile_3_3", "Tile_3_2"), ("Tile_2_4", "Tile_1_4") } },
+            { "Tile_4_0", new List<(string, string)> { ("Tile_3_0", "Tile_2_0"), ("Tile_3_1", "Tile_2_2"), ("Tile_4_1", "Tile_4_2") } },
+            { "Tile_4_1", new List<(string, string)> { ("Tile_3_1", "Tile_2_1"), ("Tile_4_2", "Tile_4_3") } },
+            { "Tile_4_2", new List<(string, string)> { ("Tile_4_1", "Tile_4_0"), ("Tile_3_1", "Tile_2_0"), ("Tile_3_2", "Tile_2_2"), ("Tile_3_3", "Tile_2_4"), ("Tile_4_3", "Tile_4_4") } },
+            { "Tile_4_3", new List<(string, string)> { ("Tile_4_2", "Tile_4_1"), ("Tile_3_3", "Tile_2_3") } },
+            { "Tile_4_4", new List<(string, string)> { ("Tile_4_3", "Tile_4_2"), ("Tile_3_3", "Tile_2_2"), ("Tile_3_4", "Tile_2_4") } }
+        };
+    }
+
+    public bool IsValidMove(string currentTile, string destinationTile)
     {
-        string currentTile = GetTileName(tiger.transform.position, boardTiles);
-        string targetTileName = targetTile.name;
-
-        if (currentTile == targetTileName)
+        if (validMoves.ContainsKey(currentTile) && validMoves[currentTile].Contains(destinationTile))
         {
-            Debug.LogWarning($"Cannot move tiger to the same tile: {currentTile}.");
-            return false;
+            return true;
         }
-
-        if (validMoves.ContainsKey(currentTile) && validMoves[currentTile].Contains(targetTileName))
-        {
-            if (!IsTileOccupied(targetTile))
-            {
-                tiger.transform.position = targetTile.transform.position;
-                Debug.Log($"Tiger moved from {currentTile} to {targetTileName}.");
-                return true;
-            }
-            else
-            {
-                Debug.LogWarning($"Cannot move tiger to {targetTileName} because it is occupied.");
-            }
-        }
-        else if (CanJumpAndCapture(currentTile, targetTileName))
-        {
-            string middleTile = GetMiddleTile(currentTile, targetTileName);
-            GameObject middleGoat = GetGoatAtTile(middleTile);
-            if (middleGoat != null)
-            {
-                Destroy(middleGoat);
-                GameManager.Instance.goats.Remove(middleGoat);
-                tiger.transform.position = targetTile.transform.position;
-                Debug.Log($"Tiger jumped from {currentTile} to {targetTileName}, capturing goat at {middleTile}.");
-                return true;
-            }
-        }
-        else
-        {
-            Debug.LogWarning($"Invalid move for tiger from {currentTile} to {targetTileName}.");
-        }
-
         return false;
     }
 
-    private bool CanJumpAndCapture(string fromTile, string toTile)
+    public bool IsValidCapture(string currentTile, string destinationTile, out string goatTile)
     {
-        string key = $"{fromTile}|{GetMiddleTile(fromTile, toTile)}";
-        return jumpMoves.ContainsKey(key) && jumpMoves[key] == toTile;
-    }
-
-    private string GetMiddleTile(string fromTile, string toTile)
-    {
-        foreach (var jumpMove in jumpMoves)
+        goatTile = null;
+        if (captureMoves.ContainsKey(currentTile))
         {
-            string[] tiles = jumpMove.Key.Split('|');
-            if (tiles[0] == fromTile && jumpMove.Value == toTile)
+            foreach (var (goat, destination) in captureMoves[currentTile])
             {
-                return tiles[1];
+                if (destination == destinationTile && GameManager.Instance.IsGoatAtPosition(GameManager.Instance.GetTilePosition(goat)))
+                {
+                    goatTile = goat;
+                    return true;
+                }
             }
-        }
-        return string.Empty;
-    }
-
-    private GameObject GetGoatAtTile(string tileName)
-    {
-        foreach (var goat in GameManager.Instance.goats)
-        {
-            if (GetTileName(goat.transform.position, GameManager.Instance.tiles) == tileName)
-            {
-                return goat;
-            }
-        }
-        return null;
-    }
-
-    public string GetTileName(Vector3 position, Dictionary<string, GameObject> boardTiles)
-    {
-        foreach (var tile in boardTiles)
-        {
-            if (Vector3.Distance(tile.Value.transform.position, position) < 0.1f)
-                return tile.Key;
-        }
-        Debug.LogError("Tiger position does not match any tile.");
-        return string.Empty;
-    }
-
-    public bool IsTileOccupied(GameObject tile)
-    {
-        foreach (var goat in GameManager.Instance.goats)
-        {
-            if (Vector3.Distance(goat.transform.position, tile.transform.position) < 0.1f)
-            {
-                return true;
-            }
-        }
-        if (GameManagerBoard2.Instance.tiger != null &&
-            Vector3.Distance(GameManager.Instance.tiger.transform.position, tile.transform.position) < 0.1f)
-        {
-            return true;
         }
         return false;
     }

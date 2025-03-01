@@ -16,7 +16,7 @@ EditorBuildSettings:
     guid: fe33627d57584ba43ad08696bd833e2c
   - enabled: 1
     path: Assets/Board1/Board1.unity
-    guid: 6d5a3a927eb18884cb17007f1579e9cb
+    guid: 38b7d1806c132eb4386b0464a2f20da4
   - enabled: 1
     path: Assets/Board2/Board2.unity
     guid: 6c3c6a7ed20b36c4cbb46e203b041b80

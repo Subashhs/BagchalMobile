@@ -4,15 +4,10 @@ public class TigerSelection : MonoBehaviour
 {
     private void OnMouseDown()
     {
-        if (GameManager.Instance == null)
+        // When the tiger is clicked, select it
+        if (GameManager.Instance.currentTurn == GameManager.Turn.Tiger)
         {
-            Debug.LogError("GameManager instance is not initialized.");
-            return;
+            GameManager.Instance.SelectTiger(gameObject);
         }
-
-        Debug.Log("Tiger clicked.");
-
-        // Select the tiger
-        GameManager.Instance.SelectPiece(gameObject);
     }
 }
