@@ -13,6 +13,9 @@ EditorBuildSettings:
     guid: 3fc8acdd13e6c734bafef6554d6fdbcd
   - enabled: 1
     path: Assets/Scenes/OptionBoard.unity
+    guid: 8bcae15b1a9525f4490517595bb4bdfb
+  - enabled: 1
+    path: Assets/Scenes/BoardOption.unity
     guid: fe33627d57584ba43ad08696bd833e2c
   - enabled: 1
     path: Assets/Board1/Board1.unity
