@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PieceMovementB2 : MonoBehaviour
+public class NewPieceMovementB2 : MonoBehaviour
 {
     private TigerMovementB2 tigerMovement;
     private GoatMovementB2 goatMovement;

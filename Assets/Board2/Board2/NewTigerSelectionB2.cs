@@ -13,6 +13,13 @@ public class NewTigerSelectionB2 : MonoBehaviour
         Debug.Log("Tiger clicked.");
 
         // Select the tiger
-        GameManagerBoard2.Instance.SelectPiece(gameObject);
+        if (GameManagerBoard2.Instance.currentTurn == GameManagerBoard2.Turn.Tiger)
+        {
+            GameManagerBoard2.Instance.SelectPiece(gameObject);
+        }
+        else
+        {
+            Debug.LogWarning("Invalid selection for the current turn.");
+        }
     }
 }

@@ -9,6 +9,7 @@ public class LoadingScreen : MonoBehaviour
     public Slider loadingBar; // Assign in Inspector
     public TextMeshProUGUI loadingText; // Assign in Inspector
     public string sceneToLoad = "NextScene"; // Change this to your scene name
+    public float fakeLoadingDuration = 3f; // Duration for the fake loading
 
     void Start()
     {
@@ -23,6 +24,19 @@ public class LoadingScreen : MonoBehaviour
             yield break;
         }
 
+        float elapsedTime = 0f;
+
+        while (elapsedTime < fakeLoadingDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            float progress = Mathf.Clamp01(elapsedTime / fakeLoadingDuration); // Normalize progress (0-1)
+            loadingBar.value = progress;
+            loadingText.text = $"BAGCHAL... {Mathf.RoundToInt(progress * 100)}%"; // Update text
+
+            yield return null;
+        }
+
+        // After fake loading, start the actual scene loading
         AsyncOperation operation = SceneManager.LoadSceneAsync(sceneToLoad);
 
         while (!operation.isDone)

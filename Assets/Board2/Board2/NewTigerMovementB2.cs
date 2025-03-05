@@ -7,8 +7,7 @@ public class TigerMovementB2 : MonoBehaviour
     {
         { "Tile_0_0", new List<string> { "Tile_1_2", "Tile_1_0", "Tile_1_1" } },
         { "Tile_1_0", new List<string> { "Tile_0_0", "Tile_1_1", "Tile_2_0" } },
-        { "Tile_1_1", new List<string> { "Tile_1_0", "Tile_1_1", "Tile_0_0" } },
-
+        { "Tile_1_1", new List<string> { "Tile_1_0", "Tile_1_2", "Tile_0_0" } },
         { "Tile_1_2", new List<string> { "Tile_0_0", "Tile_1_1", "Tile_2_2" } },
         { "Tile_2_0", new List<string> { "Tile_1_0", "Tile_2_1" } },
         { "Tile_2_1", new List<string> { "Tile_2_0", "Tile_2_2", "Tile_3_1" } },

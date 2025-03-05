@@ -265,6 +265,7 @@ MonoBehaviour:
   loadingBar: {fileID: 1722143746}
   loadingText: {fileID: 1085154956}
   sceneToLoad: OptionBoard
+  fakeLoadingDuration: 3
 --- !u!4 &287415721
 Transform:
   m_ObjectHideFlags: 0
