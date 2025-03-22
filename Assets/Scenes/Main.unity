@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 190312424}
   - component: {fileID: 190312423}
   m_Layer: 5
-  m_Name: Image
+  m_Name: NameImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -736,7 +736,7 @@ GameObject:
   - component: {fileID: 1222085852}
   - component: {fileID: 1222085851}
   m_Layer: 0
-  m_Name: WhatsApp Image 2025-01-21 at 21.53.22_53a699ad
+  m_Name: LogoImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
