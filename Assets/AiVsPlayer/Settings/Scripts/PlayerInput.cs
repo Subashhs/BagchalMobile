@@ -2,14 +2,14 @@ using UnityEngine;
 
 public class PlayerInputAI : MonoBehaviour
 {
-    private BagchalGame gameManager;
+    public BagchalGameAI gameManagerAI;
     private bool isDragging = false;
     private Vector2Int selectedPiece;
 
     [System.Obsolete]
     void Start()
     {
-        gameManager = FindObjectOfType<BagchalGame>();
+        gameManagerAI = FindObjectOfType<BagchalGameAI>();
     }
 
     void Update()
@@ -22,13 +22,13 @@ public class PlayerInputAI : MonoBehaviour
 
             if (x >= 0 && x < 5 && y >= 0 && y < 5)
             {
-                if (gameManager.IsGoatTurn)
+                if (gameManagerAI.IsGoatTurn)
                 {
-                    gameManager.PlaceGoat(x, y);
+                    gameManagerAI.PlaceGoat(x, y);
                 }
                 else
                 {
-                    if (gameManager.IsTigerAt(x, y))
+                    if (gameManagerAI.IsTigerAt(x, y))
                     {
                         isDragging = true;
                         selectedPiece = new Vector2Int(x, y);
@@ -45,9 +45,9 @@ public class PlayerInputAI : MonoBehaviour
 
             if (x >= 0 && x < 5 && y >= 0 && y < 5)
             {
-                if (gameManager.CanMoveTiger(selectedPiece.x, selectedPiece.y, x, y))
+                if (gameManagerAI.CanMoveTiger(selectedPiece.x, selectedPiece.y, x, y))
                 {
-                    gameManager.MoveTiger(selectedPiece.x, selectedPiece.y, x, y);
+                    gameManagerAI.MoveTiger(selectedPiece.x, selectedPiece.y, x, y);
                 }
             }
             isDragging = false;
