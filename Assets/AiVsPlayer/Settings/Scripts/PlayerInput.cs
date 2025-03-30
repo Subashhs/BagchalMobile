@@ -7,7 +7,6 @@ public class PlayerInputAI : MonoBehaviour
     private bool isDragging = false;
     private Vector2Int selectedPiece;
 
-    [System.Obsolete]
     void Start()
     {
         gameManagerAI = FindObjectOfType<BagchalGameAI>();
@@ -15,44 +14,40 @@ public class PlayerInputAI : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.touchCount > 0)
         {
-            Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            int x = Mathf.RoundToInt(mousePosition.x);
-            int y = Mathf.RoundToInt(mousePosition.y);
+            Touch touch = Input.GetTouch(0);
+            Vector2 touchPosition = Camera.main.ScreenToWorldPoint(touch.position);
+            int x = Mathf.RoundToInt(touchPosition.x);
+            int y = Mathf.RoundToInt(touchPosition.y);
 
             if (x >= 0 && x < 5 && y >= 0 && y < 5)
             {
-                if (gameManagerAI.IsGoatTurn)
+                if (touch.phase == TouchPhase.Began)
                 {
-                    gameManagerAI.PlaceGoat(x, y);
-                }
-                else
-                {
-                    if (gameManagerAI.IsTigerAt(x, y))
+                    if (gameManagerAI.IsGoatTurn)
                     {
-                        isDragging = true;
-                        selectedPiece = new Vector2Int(x, y);
+                        gameManagerAI.PlaceGoat(x, y);
+                    }
+                    else
+                    {
+                        if (gameManagerAI.IsTigerAt(x, y))
+                        {
+                            isDragging = true;
+                            selectedPiece = new Vector2Int(x, y);
+                        }
                     }
                 }
-            }
-        }
 
-        if (Input.GetMouseButtonUp(0) && isDragging)
-        {
-            Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            int x = Mathf.RoundToInt(mousePosition.x);
-            int y = Mathf.RoundToInt(mousePosition.y);
-
-            if (x >= 0 && x < 5 && y >= 0 && y < 5)
-            {
-                if (gameManagerAI.CanMoveTiger(selectedPiece.x, selectedPiece.y, x, y))
+                if (touch.phase == TouchPhase.Ended && isDragging)
                 {
-                    gameManagerAI.MoveTiger(selectedPiece.x, selectedPiece.y, x, y);
+                    if (gameManagerAI.CanMoveTiger(selectedPiece.x, selectedPiece.y, x, y))
+                    {
+                        gameManagerAI.MoveTiger(selectedPiece.x, selectedPiece.y, x, y);
+                    }
+                    isDragging = false;
                 }
             }
-            isDragging = false;
         }
     }
 }
-

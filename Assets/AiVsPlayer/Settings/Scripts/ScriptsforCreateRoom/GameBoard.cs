@@ -1,7 +1,6 @@
-using Photon.Pun;
 using UnityEngine;
 
-public class GameBoardAI : MonoBehaviourPun
+public class GameBoardAI : MonoBehaviour
 {
     public GameObject tiger;
     public GameObject[] goats = new GameObject[5];
@@ -9,21 +8,15 @@ public class GameBoardAI : MonoBehaviourPun
 
     void Start()
     {
-        if (photonView.IsMine)
-        {
-            // Only control the game state if this is the local player's view
-            InitializeGame();
-        }
+        InitializeGame();
     }
 
     public void InitializeGame()
     {
         // Set up the initial positions of the tiger and goats
-        // Sync the positions with Photon
-        photonView.RPC("SetInitialPositions", RpcTarget.AllBuffered);
+        SetInitialPositions();
     }
 
-    [PunRPC]
     void SetInitialPositions()
     {
         // Set the initial positions of the tiger and goats on the board
@@ -35,15 +28,6 @@ public class GameBoardAI : MonoBehaviourPun
     }
 
     public void MoveGoat(int goatIndex, Vector3 newPosition)
-    {
-        if (photonView.IsMine)
-        {
-            photonView.RPC("SyncGoatMove", RpcTarget.All, goatIndex, newPosition);
-        }
-    }
-
-    [PunRPC]
-    void SyncGoatMove(int goatIndex, Vector3 newPosition)
     {
         goats[goatIndex].transform.position = newPosition;
     }

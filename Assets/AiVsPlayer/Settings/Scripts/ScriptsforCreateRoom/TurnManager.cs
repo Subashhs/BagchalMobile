@@ -1,11 +1,9 @@
-using Photon.Pun;
 using UnityEngine;
 
-public class TurnManagerAI : MonoBehaviourPun
+public class TurnManagerAI : MonoBehaviour
 {
     private bool isTigerTurn = true; // True = Tiger's turn, False = Goat's turn
 
-    [PunRPC]
     public void SwitchTurn()
     {
         isTigerTurn = !isTigerTurn;
