@@ -8,6 +8,8 @@ TagManager:
   - Goat
   - Board
   - BoardTile
+  - AI
+  - BoardPanel
   layers:
   - Default
   - TransparentFX
@@ -19,7 +21,7 @@ TagManager:
   - Goat
   - Tiger
   - Animals
-  - 
+  - panel
   - 
   - 
   - 
