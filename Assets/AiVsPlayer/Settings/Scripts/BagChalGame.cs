@@ -2,22 +2,28 @@ using UnityEngine;
 
 public class BagchalGameAI : MonoBehaviour
 {
-    // 0 = empty, 1 = player (goat), 2 = AI (tiger)
     public GameObject goatPrefab;
     public GameObject tigerPrefab;
     private int[,] board = new int[5, 5];
-    private bool isGoatTurn = true;
+    private bool isPlayerGoat;
+    public bool IsGoatTurn { get; private set; } = true;
     private int goatsRemaining = 20;
     private int tigersRemaining = 4;
 
     void Start()
     {
-        InitializeBoard();
-        UpdateBoardVisuals(); // Update visuals after initializing the board
+        // InitializeBoard will be called from GameManagerAI with the playerCharacter parameter
     }
 
-    void InitializeBoard()
+    public void InitializeBoard(string playerCharacter)
     {
+        isPlayerGoat = playerCharacter == "Goat";
+        if (!isPlayerGoat)
+        {
+            // If player is Tiger, start with Tiger's turn
+            IsGoatTurn = false;
+        }
+
         // Set up the initial board state
         for (int i = 0; i < 5; i++)
         {
@@ -32,181 +38,104 @@ public class BagchalGameAI : MonoBehaviour
         board[0, 4] = 2;
         board[4, 0] = 2;
         board[4, 4] = 2;
+
+        UpdateBoardVisuals();
+    }
+
+    void Update()
+    {
+        if (!isPlayerGoat && IsGoatTurn)
+        {
+            // AI logic for placing goats if player is Tiger
+            AIPlaceGoat();
+        }
+        else if (isPlayerGoat && !IsGoatTurn)
+        {
+            // AI logic for moving tigers if player is Goat
+            AIMoveTiger();
+        }
+    }
+
+    void AIPlaceGoat()
+    {
+        // Simple AI logic to place a goat at the first available position
+        for (int i = 0; i < 5; i++)
+        {
+            for (int j = 0; j < 5; j++)
+            {
+                if (board[i, j] == 0)
+                {
+                    PlaceGoat(i, j);
+                    IsGoatTurn = false; // After placing a goat, it's the tiger's turn
+                    return;
+                }
+            }
+        }
+    }
+
+    void AIMoveTiger()
+    {
+        // Simple AI logic to move the first tiger found
+        for (int i = 0; i < 5; i++)
+        {
+            for (int j = 0; j < 5; j++)
+            {
+                if (board[i, j] == 2)
+                {
+                    // Try moving the tiger to a random adjacent position
+                    int[] dx = { 1, -1, 0, 0 };
+                    int[] dy = { 0, 0, 1, -1 };
+                    for (int k = 0; k < 4; k++)
+                    {
+                        int newX = i + dx[k];
+                        int newY = j + dy[k];
+                        if (newX >= 0 && newX < 5 && newY >= 0 && newY < 5 && board[newX, newY] == 0)
+                        {
+                            MoveTiger(i, j, newX, newY);
+                            IsGoatTurn = true; // After moving a tiger, it's the goat's turn
+                            return;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public void PlaceGoat(int x, int y)
     {
-        if (isGoatTurn && board[x, y] == 0 && goatsRemaining > 0)
+        if (board[x, y] == 0 && goatsRemaining > 0)
         {
-            board[x, y] = 1; // Place goat
+            board[x, y] = 1; // 1 represents a goat
+            Instantiate(goatPrefab, new Vector3(x, y, 0), Quaternion.identity);
             goatsRemaining--;
-            Debug.Log("Goat placed at: " + x + ", " + y);
-            UpdateBoardVisuals(); // Update visuals after placing goat
-            CheckForWinner();
-            isGoatTurn = false; // Switch turn to AI
-            AITurn();
+            IsGoatTurn = false; // After placing a goat, it's the tiger's turn
         }
-        else
-        {
-            Debug.Log("Invalid move or no goats left!");
-        }
-    }
-
-    void AITurn()
-    {
-        // AI (tigers) move randomly
-        for (int i = 0; i < 5; i++)
-        {
-            for (int j = 0; j < 5; j++)
-            {
-                if (board[i, j] == 2) // Find a tiger
-                {
-                    // Try to move in a random direction
-                    int dirX = Random.Range(-1, 2);
-                    int dirY = Random.Range(-1, 2);
-                    int newX = i + dirX;
-                    int newY = j + dirY;
-
-                    if (newX >= 0 && newX < 5 && newY >= 0 && newY < 5 && board[newX, newY] == 0)
-                    {
-                        MoveTiger(i, j, newX, newY);
-                        return;
-                    }
-                }
-            }
-        }
-
-        isGoatTurn = true; // After AI moves, return turn to the player
-    }
-
-    public void MoveTiger(int oldX, int oldY, int newX, int newY)
-    {
-        if (board[oldX, oldY] == 2 && board[newX, newY] == 0)
-        {
-            board[oldX, oldY] = 0;
-            board[newX, newY] = 2;
-            Debug.Log("Tiger moved from: " + oldX + ", " + oldY + " to: " + newX + ", " + newY);
-            UpdateBoardVisuals();
-            CheckForWinner();
-            isGoatTurn = true;
-        }
-        else
-        {
-            Debug.Log("Invalid tiger move!");
-        }
-    }
-
-    public bool CanMoveTiger(int oldX, int oldY, int newX, int newY)
-    {
-        return (board[oldX, oldY] == 2 && board[newX, newY] == 0);
     }
 
     public bool IsTigerAt(int x, int y)
     {
-        return board[x, y] == 2;
+        return board[x, y] == 2; // 2 represents a tiger
     }
 
-    public bool IsGoatTurn
+    public bool CanMoveTiger(int startX, int startY, int endX, int endY)
     {
-        get { return isGoatTurn; }
+        // Add logic to check if the tiger can move from (startX, startY) to (endX, endY)
+        // This is a placeholder logic
+        return board[startX, startY] == 2 && board[endX, endY] == 0;
     }
 
-    void CheckForWinner()
+    public void MoveTiger(int startX, int startY, int endX, int endY)
     {
-        // Win condition for goats: All tigers are captured
-        if (tigersRemaining == 0)
+        if (CanMoveTiger(startX, startY, endX, endY))
         {
-            Debug.Log("Goats win! All tigers are captured.");
-            ResetGame();
+            board[endX, endY] = 2; // Move tiger to the new position
+            board[startX, startY] = 0; // Clear the old position
+            IsGoatTurn = true; // After moving a tiger, it's the goat's turn
         }
-
-        // Win condition for tigers: No goats left on the board
-        if (goatsRemaining == 0)
-        {
-            Debug.Log("Tigers win! No goats left.");
-            ResetGame();
-        }
-
-        // Additional logic for checking if a goat is captured (i.e., surrounded by tigers)
-        CheckGoatsSurrounded();
-    }
-
-    void CheckGoatsSurrounded()
-    {
-        // Loop through the board to check for goats that are surrounded
-        for (int i = 0; i < 5; i++)
-        {
-            for (int j = 0; j < 5; j++)
-            {
-                if (board[i, j] == 1) // Goat found
-                {
-                    if (IsGoatSurrounded(i, j))
-                    {
-                        // Capture the goat if surrounded by tigers
-                        board[i, j] = 0;
-                        goatsRemaining++;
-                        Debug.Log("Goat at " + i + ", " + j + " captured by tigers!");
-                    }
-                }
-            }
-        }
-    }
-
-    bool IsGoatSurrounded(int x, int y)
-    {
-        // Check if all adjacent tiles (up, down, left, right) are occupied by tigers (2)
-        int[] dirX = { -1, 1, 0, 0 };
-        int[] dirY = { 0, 0, -1, 1 };
-
-        int tigerCount = 0;
-        for (int i = 0; i < 4; i++)
-        {
-            int newX = x + dirX[i];
-            int newY = y + dirY[i];
-            if (newX >= 0 && newX < 5 && newY >= 0 && newY < 5)
-            {
-                if (board[newX, newY] == 2) // Tiger is adjacent
-                {
-                    tigerCount++;
-                }
-            }
-        }
-
-        return tigerCount == 4; // Goat is surrounded if all 4 adjacent positions are tigers
-    }
-
-    void ResetGame()
-    {
-        // Reset the game state and board for a new round
-        InitializeBoard();
-        goatsRemaining = 20;
-        tigersRemaining = 4;
-        isGoatTurn = true;
-        UpdateBoardVisuals();
     }
 
     void UpdateBoardVisuals()
     {
-        // Clear existing pieces
-        foreach (Transform child in transform)
-        {
-            Destroy(child.gameObject);
-        }
-
-        // Spawn new pieces
-        for (int i = 0; i < 5; i++)
-        {
-            for (int j = 0; j < 5; j++)
-            {
-                if (board[i, j] == 1)
-                {
-                    Instantiate(goatPrefab, new Vector2(i, j), Quaternion.identity, transform);
-                }
-                else if (board[i, j] == 2)
-                {
-                    Instantiate(tigerPrefab, new Vector2(i, j), Quaternion.identity, transform);
-                }
-            }
-        }
+        // Code to update the visual representation of the board
     }
 }

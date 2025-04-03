@@ -30,8 +30,8 @@ EditorBuildSettings:
     path: Assets/Scenes/AiVsPlayer.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
   - enabled: 1
-    path: Assets/AiVsPlayer/DA_Minimal_Setup/DA_Setup.unity
-    guid: 84fbab6c493697b4a8c704349a9b640f
+    path: Assets/Scenes/CharacterSelection.unity
+    guid: 390b63d18532c974da6829a4944e677f
   m_configObjects:
     com.unity.adaptiveperformance.google.android.provider_settings: {fileID: 11400000, guid: 9319b4b44fa0e7742a40c5864640534f, type: 2}
     com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: 9927efa4e2438894180b55b3d9f0fda8, type: 2}

@@ -291,9 +291,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 606606066}
-  - component: {fileID: 606606069}
   - component: {fileID: 606606068}
   - component: {fileID: 606606070}
+  - component: {fileID: 606606071}
   m_Layer: 0
   m_Name: board_0
   m_TagString: GameController
@@ -329,20 +329,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameManagerAI: {fileID: 1160932057}
---- !u!114 &606606069
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 606606065}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0888b956b57041c5892998316eb5a59, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UpdateIndicator: {fileID: 0}
-  Text: {fileID: 0}
 --- !u!212 &606606070
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -395,7 +381,21 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!1 &619394800
+--- !u!114 &606606071
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 606606065}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98fd5d618c9ddb34e83896ecaefd7bbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  goatPrefab: {fileID: 5762715170878070614, guid: 5237e73cff0946e45b5a34f7e4dc2f9f, type: 3}
+  tigerPrefab: {fileID: 8460050835855165176, guid: 566a2c67baae31047a11c98188fd0385, type: 3}
+--- !u!1 &650349217
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -403,37 +403,24 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 619394802}
-  - component: {fileID: 619394801}
+  - component: {fileID: 650349218}
   m_Layer: 0
-  m_Name: Global Light 2D
+  m_Name: BoardManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &619394801
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 619394800}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 073797afb82c5a1438f328866b10b3f0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!4 &619394802
+--- !u!4 &650349218
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 619394800}
+  m_GameObject: {fileID: 650349217}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 654.0382, y: 1450.3071, z: -11.047508}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -619,8 +606,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98fd5d618c9ddb34e83896ecaefd7bbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  goatPrefab: {fileID: 5289304734942892482, guid: d233fa0fe18ebfc408326afe77fa794a, type: 3}
-  tigerPrefab: {fileID: 8961406747518038574, guid: defc59262a9e16b428ed13dda14573b3, type: 3}
+  goatPrefab: {fileID: 5762715170878070614, guid: 5237e73cff0946e45b5a34f7e4dc2f9f, type: 3}
+  tigerPrefab: {fileID: 8460050835855165176, guid: 566a2c67baae31047a11c98188fd0385, type: 3}
 --- !u!1 &1713766478
 GameObject:
   m_ObjectHideFlags: 0
@@ -848,9 +835,9 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 519420032}
-  - {fileID: 619394802}
   - {fileID: 1160932056}
   - {fileID: 606606066}
   - {fileID: 1713766482}
   - {fileID: 389073061}
   - {fileID: 2062978469}
+  - {fileID: 650349218}

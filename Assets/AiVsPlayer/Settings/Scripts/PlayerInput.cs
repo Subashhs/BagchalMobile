@@ -1,15 +1,16 @@
 using UnityEngine;
-using System.Collections.Generic;
 
 public class PlayerInputAI : MonoBehaviour
 {
     public BagchalGameAI gameManagerAI;
     private bool isDragging = false;
     private Vector2Int selectedPiece;
+    private bool isPlayerGoat;
 
     void Start()
     {
         gameManagerAI = FindObjectOfType<BagchalGameAI>();
+        isPlayerGoat = PlayerPrefs.GetString("PlayerCharacter", "Goat") == "Goat";
     }
 
     void Update()
@@ -25,7 +26,7 @@ public class PlayerInputAI : MonoBehaviour
             {
                 if (touch.phase == TouchPhase.Began)
                 {
-                    if (gameManagerAI.IsGoatTurn)
+                    if (isPlayerGoat && gameManagerAI.IsGoatTurn || !isPlayerGoat && !gameManagerAI.IsGoatTurn)
                     {
                         gameManagerAI.PlaceGoat(x, y);
                     }
