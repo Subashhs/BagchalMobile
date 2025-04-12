@@ -4,24 +4,24 @@ public class NewBoardManagerB2 : MonoBehaviour
 {
     private void OnMouseDown()
     {
+        Debug.Log($"[TILE CLICK] OnMouseDown called on Tile: {gameObject.name}");
+
         if (GameManagerBoard2.Instance == null)
         {
-            Debug.LogError("GameManagerBoard2 instance is not initialized.");
+            Debug.LogError("[TILE CLICK] GameManagerBoard2 instance is not initialized.");
             return;
         }
 
-        Debug.Log("Tile or Piece clicked.");
+        Debug.Log($"[TILE CLICK] GameManager Instance is valid. Is Piece Selected: {GameManagerBoard2.Instance.IsPieceSelected()}");
 
-        // Check if a piece is already selected
         if (GameManagerBoard2.Instance.IsPieceSelected())
         {
-            // Move the selected piece
+            Debug.Log($"[TILE CLICK] A piece is selected. Attempting to move to Tile: {gameObject.name}. Selected Tiger: {(GameManagerBoard2.Instance.selectedTiger != null ? GameManagerBoard2.Instance.selectedTiger.name : "null")}, Selected Goat: {(GameManagerBoard2.Instance.selectedGoat != null ? GameManagerBoard2.Instance.selectedGoat.name : "null")}");
             GameManagerBoard2.Instance.MovePiece(gameObject);
         }
         else
         {
-            // Select the piece
-            GameManagerBoard2.Instance.SelectPiece(gameObject);
+            Debug.Log("[TILE CLICK] No piece selected. Tile click does nothing for selection.");
         }
     }
 }

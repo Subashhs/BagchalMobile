@@ -85,16 +85,40 @@ public class GameManagerBoard2 : MonoBehaviour
         }
     }
 
-    public void SelectPiece(GameObject piece)
+    public void SelectPiece(GameObject clickedObject)
     {
-        if (currentTurn == Turn.Tiger && piece == tiger)
+        Debug.Log($"SelectPiece called with object: {clickedObject.name}, currentTurn: {currentTurn}, Stored Tiger: {(tiger != null ? tiger.name : "null")}");
+
+        if (currentTurn == Turn.Tiger)
         {
-            selectedTiger = piece;
-            Debug.Log("Tiger selected.");
+            // Check if the clicked object IS the stored tiger
+            if (clickedObject == tiger)
+            {
+                selectedTiger = clickedObject;
+                Debug.Log("Tiger selected.");
+            }
+            // Alternative: Check if the clicked object has the TigerMovementB2 component (assuming only the Tiger has this)
+            else if (clickedObject.GetComponent<TigerMovementB2>() != null)
+            {
+                // Verify it's the *correct* tiger instance if you have multiple (though unlikely here)
+                if (tiger != null && clickedObject == tiger)
+                {
+                    selectedTiger = clickedObject;
+                    Debug.Log("Tiger selected (by component check).");
+                }
+                else
+                {
+                    Debug.LogWarning($"Clicked on an object with TigerMovementB2 ('{clickedObject.name}'), but it does not match the stored Tiger object.");
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"Attempted to select '{clickedObject.name}' as Tiger, but it's not the Tiger.");
+            }
         }
-        else if (currentTurn == Turn.Goat && goats.Contains(piece))
+        else if (currentTurn == Turn.Goat && goats.Contains(clickedObject))
         {
-            selectedGoat = piece;
+            selectedGoat = clickedObject;
             Debug.Log("Goat selected.");
         }
         else
@@ -143,7 +167,7 @@ public class GameManagerBoard2 : MonoBehaviour
         }
     }
 
-    private void CheckForWinCondition()
+    public void CheckForWinCondition()
     {
         // Check if Tiger captured a Goat
         if (!tigerCapturedGoat && goats.Count < 3)
