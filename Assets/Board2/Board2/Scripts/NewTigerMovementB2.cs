@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class TigerMovementB2 : MonoBehaviour
 {
-    private Dictionary<string, List<string>> validMoves = new Dictionary<string, List<string>>()
+    public Dictionary<string, List<string>> validMoves = new Dictionary<string, List<string>>()
     {
         { "Tile_0_0", new List<string> { "Tile_1_2", "Tile_1_0", "Tile_1_1" } },
         { "Tile_1_0", new List<string> { "Tile_0_0", "Tile_1_1", "Tile_2_0" } },
@@ -81,7 +81,7 @@ public class TigerMovementB2 : MonoBehaviour
         return jumpMoves.ContainsKey(key) && jumpMoves[key] == toTile;
     }
 
-    private string GetMiddleTile(string fromTile, string toTile)
+    public string GetMiddleTile(string fromTile, string toTile)
     {
         foreach (var jumpMove in jumpMoves)
         {
@@ -121,8 +121,12 @@ public class TigerMovementB2 : MonoBehaviour
     {
         foreach (var goat in GameManagerBoard2.Instance.goats)
         {
+            Debug.Log($"Checking if tile {tile.name} is occupied."); // Add this line
+                                                                     // ... rest of the method ...
+            
             if (Vector3.Distance(goat.transform.position, tile.transform.position) < 0.1f)
             {
+                Debug.Log($"Tile {tile.name} is occupied:"); // Add this line
                 return true;
             }
         }
