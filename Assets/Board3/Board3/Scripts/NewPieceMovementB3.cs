@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PieceMovementB3 : MonoBehaviour
+public class NewPieceMovementB3 : MonoBehaviour
 {
     private TigerMovementB3 tigerMovement;
     private GoatMovementB3 goatMovement;
@@ -17,7 +17,7 @@ public class PieceMovementB3 : MonoBehaviour
         // Check if the GameManagerBoard2 instance exists
         if (GameManagerBoard3.Instance == null)
         {
-            Debug.LogError("GameManagerBoard3 instance is not initialized.");
+            Debug.LogError("GameManagerBoard2 instance is not initialized.");
             return;
         }
 
@@ -31,7 +31,7 @@ public class PieceMovementB3 : MonoBehaviour
                 GameManagerBoard3.Instance.selectedTiger != null)
             {
                 // Try moving the tiger
-                if (tigerMovement.TryMove(GameManagerBoard3.Instance.selectedTiger, gameObject, GameManagerBoard2.Instance.tiles))
+                if (tigerMovement.TryMove(GameManagerBoard3.Instance.selectedTiger, gameObject, GameManagerBoard3.Instance.tiles))
                 {
                     // Successfully moved the tiger
                     GameManagerBoard3.Instance.selectedTiger = null;  // Deselect the tiger

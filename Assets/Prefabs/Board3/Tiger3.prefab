@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 2347025474901033349}
   - component: {fileID: 819272064201230312}
   - component: {fileID: 4270813668617505891}
-  - component: {fileID: -2784227504688645187}
-  - component: {fileID: 2862439686822304605}
+  - component: {fileID: -2188037103876241299}
+  - component: {fileID: 6130848649239232598}
   m_Layer: 0
   m_Name: Tiger3
   m_TagString: Tiger
@@ -160,7 +160,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &-2784227504688645187
+--- !u!114 &-2188037103876241299
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -169,10 +169,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 8961406747518038574}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e43b9d0318b3100489c39f2c4453ecb0, type: 3}
+  m_Script: {fileID: 11500000, guid: 69f9e9b266900c54699c5f0a8e2e67e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &2862439686822304605
+--- !u!114 &6130848649239232598
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

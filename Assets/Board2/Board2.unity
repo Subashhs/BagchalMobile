@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 18746768}
   m_Layer: 0
   m_Name: Tile_1_1
-  m_TagString: Untagged
+  m_TagString: BoardTile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -269,7 +269,7 @@ GameObject:
   - component: {fileID: 86076040}
   m_Layer: 0
   m_Name: Tile_1_0
-  m_TagString: Untagged
+  m_TagString: BoardTile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -427,7 +427,7 @@ GameObject:
   - component: {fileID: 198106119}
   m_Layer: 0
   m_Name: Tile_3_1
-  m_TagString: Untagged
+  m_TagString: BoardTile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -627,7 +627,7 @@ GameObject:
   - component: {fileID: 233139069}
   m_Layer: 0
   m_Name: Tile_2_2
-  m_TagString: Untagged
+  m_TagString: BoardTile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -964,7 +964,7 @@ GameObject:
   - component: {fileID: 481510347}
   m_Layer: 0
   m_Name: Tile_1_2
-  m_TagString: Untagged
+  m_TagString: BoardTile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1164,7 +1164,7 @@ GameObject:
   - component: {fileID: 790949142}
   m_Layer: 0
   m_Name: Tile_2_0
-  m_TagString: Untagged
+  m_TagString: BoardTile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1230,7 +1230,7 @@ GameObject:
   - component: {fileID: 1125704825}
   m_Layer: 0
   m_Name: Tile_2_1
-  m_TagString: Untagged
+  m_TagString: BoardTile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1296,7 +1296,7 @@ GameObject:
   - component: {fileID: 1364827438}
   m_Layer: 0
   m_Name: Tile_3_2
-  m_TagString: Untagged
+  m_TagString: BoardTile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1760,7 +1760,7 @@ GameObject:
   - component: {fileID: 1949753884}
   m_Layer: 0
   m_Name: Tile_0_0
-  m_TagString: Untagged
+  m_TagString: BoardTile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1826,7 +1826,7 @@ GameObject:
   - component: {fileID: 2051920529}
   m_Layer: 0
   m_Name: Tile_3_0
-  m_TagString: Untagged
+  m_TagString: BoardTile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

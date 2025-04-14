@@ -43,6 +43,14 @@ public class GameManagerBoard3 : MonoBehaviour
         tigerMovement = tigerPrefab.GetComponent<TigerMovementB3>();
     }
 
+    public void UpdateTurnText()
+    {
+        if (turnText != null)
+        {
+            turnText.text = (currentTurn == Turn.Tiger) ? "TIGER'S MOVE" : "GOAT'S MOVE";
+        }
+    }
+
     private void Start()
     {
         InitializeBoard();
@@ -85,18 +93,37 @@ public class GameManagerBoard3 : MonoBehaviour
         }
     }
 
-    public void SelectPiece(GameObject piece)
+    public void SelectPiece(GameObject clickedObject)
     {
-        Debug.Log($"Attempting to select piece: {piece.name}");
+        Debug.Log($"SelectPiece called with object: {clickedObject.name}, currentTurn: {currentTurn}, Stored Tiger: {(tiger != null ? tiger.name : "null")}");
 
-        if (currentTurn == Turn.Tiger && piece == tiger)
+        if (currentTurn == Turn.Tiger)
         {
-            selectedTiger = piece;
-            Debug.Log("Tiger selected.");
+            if (clickedObject == tiger)
+            {
+                selectedTiger = clickedObject;
+                Debug.Log("Tiger selected.");
+            }
+            else if (clickedObject.GetComponent<TigerMovementB3>() != null)
+            {
+                if (tiger != null && clickedObject == tiger)
+                {
+                    selectedTiger = clickedObject;
+                    Debug.Log("Tiger selected (by component check).");
+                }
+                else
+                {
+                    Debug.LogWarning($"Clicked on an object with TigerMovementB2 ('{clickedObject.name}'), but it does not match the stored Tiger object.");
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"Attempted to select '{clickedObject.name}' as Tiger, but it's not the Tiger.");
+            }
         }
-        else if (currentTurn == Turn.Goat && goats.Contains(piece))
+        else if (currentTurn == Turn.Goat && goats.Contains(clickedObject))
         {
-            selectedGoat = piece;
+            selectedGoat = clickedObject;
             Debug.Log("Goat selected.");
         }
         else
@@ -112,15 +139,13 @@ public class GameManagerBoard3 : MonoBehaviour
 
     public void MovePiece(GameObject tile)
     {
-        Debug.Log($"Attempting to move piece to tile: {tile.name}");
-
         if (selectedTiger != null && currentTurn == Turn.Tiger && tiles.ContainsValue(tile))
         {
             if (tigerMovement.TryMove(selectedTiger, tile, tiles))
             {
                 selectedTiger = null;
                 currentTurn = Turn.Goat;
-                CheckForWinCondition();
+                CheckForWinCondition(); // Call CheckForWinCondition() after each move
                 UpdateTurnText();
             }
             else
@@ -134,7 +159,7 @@ public class GameManagerBoard3 : MonoBehaviour
             {
                 selectedGoat = null;
                 currentTurn = Turn.Tiger;
-                CheckForWinCondition();
+                CheckForWinCondition(); // Call CheckForWinCondition() after each move
                 UpdateTurnText();
             }
             else
@@ -148,8 +173,10 @@ public class GameManagerBoard3 : MonoBehaviour
         }
     }
 
-    private void CheckForWinCondition()
+    public void CheckForWinCondition()
     {
+        Debug.Log("CheckForWinCondition() called.");
+
         if (!tigerCapturedGoat && goats.Count < 3)
         {
             tigerCapturedGoat = true;
@@ -158,35 +185,83 @@ public class GameManagerBoard3 : MonoBehaviour
             return;
         }
 
-        if (IsTigerBlocked())
+        string currentTigerTile = tigerMovement.GetTileName(tiger.transform.position, tiles);
+        Debug.Log($"Tiger current tile: {currentTigerTile}");
+
+        if (tigerMovement.validMoves.ContainsKey(currentTigerTile))
         {
-            winText.text = "GOATS WIN! TIGER IS BLOCKED!";
-            Invoke("ReturnToOptionBoard", 3f);
+            bool tigerIsCompletelyBlocked = true;
+            Debug.Log($"Tiger valid moves: {tigerMovement.validMoves[currentTigerTile].Count}");
+
+            foreach (string possibleMove in tigerMovement.validMoves[currentTigerTile])
+            {
+                Debug.Log($"Checking possible move: {possibleMove}");
+                if (tiles.ContainsKey(possibleMove))
+                {
+                    GameObject targetTile = tiles[possibleMove];
+                    Debug.Log($"Target tile occupied: {tigerMovement.IsTileOccupied(targetTile)}");
+
+                    if (!tigerMovement.IsTileOccupied(targetTile))
+                    {
+                        Debug.Log($"Checking jump move from {currentTigerTile} to {possibleMove}");
+                        if (!CanTigerJumpTo(currentTigerTile, possibleMove))
+                        {
+                            tigerIsCompletelyBlocked = false;
+                            Debug.Log("Tiger has a valid move (not blocked).");
+                            break;
+                        }
+                        else
+                        {
+                            Debug.Log("Tiger can jump but all jump places are blocked.");
+                        }
+                    }
+                }
+                else
+                {
+                    Debug.LogError($"Tile {possibleMove} not found in tiles dictionary.");
+                }
+            }
+
+            Debug.Log($"Tiger is completely blocked: {tigerIsCompletelyBlocked}");
+
+            if (tigerIsCompletelyBlocked)
+            {
+                winText.text = "GOATS WIN! TIGER IS BLOCKED!";
+                Invoke("ReturnToOptionBoard", 3f);
+            }
+        }
+        else
+        {
+            Debug.LogError($"Tiger current tile {currentTigerTile} not found in valid moves dictionary.");
         }
     }
 
-    private bool IsTigerBlocked()
+    private bool CanTigerJumpTo(string fromTile, string toTile)
     {
-        foreach (var tile in tiles.Values)
+        string middleTile = tigerMovement.GetMiddleTile(fromTile, toTile);
+        if (string.IsNullOrEmpty(middleTile))
         {
-            if (!tigerMovement.IsTileOccupied(tile))
+            return false;
+        }
+
+        if (tiles.ContainsKey(middleTile))
+        {
+            GameObject middleTileObject = tiles[middleTile];
+            if (tigerMovement.IsTileOccupied(middleTileObject))
             {
                 return false;
             }
         }
+        else
+        {
+            return false;
+        }
+
         return true;
     }
-
-    public void UpdateTurnText()
-    {
-        if (turnText != null)
-        {
-            turnText.text = (currentTurn == Turn.Tiger) ? "TIGER'S MOVE" : "GOAT'S MOVE";
-        }
-    }
-
     private void ReturnToOptionBoard()
     {
+        Debug.Log("ReturnToOptionBoard() called.");
         SceneManager.LoadScene("OptionBoard");
     }
 }

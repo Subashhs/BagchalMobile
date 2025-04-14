@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 5593549591289381312}
   - component: {fileID: 1003000711269753576}
   - component: {fileID: 9214583326742102859}
-  - component: {fileID: -3025687137397772213}
-  - component: {fileID: 1878625260266438645}
+  - component: {fileID: 3019249866675881694}
+  - component: {fileID: 5836275227053344294}
   m_Layer: 0
   m_Name: Goat3
   m_TagString: Goat
@@ -160,7 +160,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 30, y: 40}
   m_EdgeRadius: 0
---- !u!114 &-3025687137397772213
+--- !u!114 &3019249866675881694
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -172,7 +172,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07556b7bebec01e4ea8e4b17f39a20cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1878625260266438645
+--- !u!114 &5836275227053344294
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 2347025474901033349}
   - component: {fileID: 819272064201230312}
   - component: {fileID: 4270813668617505891}
-  - component: {fileID: -422073336404335602}
   - component: {fileID: -7507636308293729183}
+  - component: {fileID: 1705045307812068870}
   m_Layer: 0
   m_Name: Tiger
   m_TagString: Tiger
@@ -160,18 +160,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &-422073336404335602
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8961406747518038574}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 250d3d01ee8458c4ea12095c5874c213, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &-7507636308293729183
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -182,5 +170,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d6c7ad648dbf2e347b3632b89e9e7d62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1705045307812068870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8961406747518038574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 250d3d01ee8458c4ea12095c5874c213, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

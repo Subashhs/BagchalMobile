@@ -3,7 +3,14 @@ guid: a06fa8c6cb50f5e4d82264d9d8ed3b0f
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - turnText: {instanceID: 0}
+  - winText: {instanceID: 0}
+  - tigerPrefab: {fileID: 8961406747518038574, guid: 686ff29d7790f9243b60d870023cd4d2, type: 3}
+  - goatPrefab: {fileID: 5289304734942892482, guid: 5341a86047bec90478a630f5e12c75a1, type: 3}
+  - selectedTiger: {fileID: 8961406747518038574, guid: 686ff29d7790f9243b60d870023cd4d2, type: 3}
+  - selectedGoat: {fileID: 5289304734942892482, guid: 5341a86047bec90478a630f5e12c75a1, type: 3}
+  - tiger: {fileID: 8961406747518038574, guid: 686ff29d7790f9243b60d870023cd4d2, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
