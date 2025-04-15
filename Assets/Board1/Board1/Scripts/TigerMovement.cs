@@ -74,27 +74,54 @@ public class TigerMovement : MonoBehaviour
 
     public bool IsValidMove(string currentTile, string destinationTile)
     {
-        if (validMoves.ContainsKey(currentTile) && validMoves[currentTile].Contains(destinationTile))
+        Debug.Log($"IsValidMove: Current Tile: {currentTile}, Destination Tile: {destinationTile}");
+
+        if (validMoves.ContainsKey(currentTile))
         {
-            return true;
+            Debug.Log($"Valid moves for {currentTile}: {string.Join(", ", validMoves[currentTile])}");
+            if (validMoves[currentTile].Contains(destinationTile))
+            {
+                Debug.Log($"IsValidMove: True");
+                return true;
+            }
         }
+
+        Debug.Log($"IsValidMove: False");
         return false;
     }
 
     public bool IsValidCapture(string currentTile, string destinationTile, out string goatTile)
     {
         goatTile = null;
+        Debug.Log($"IsValidCapture: Current Tile: {currentTile}, Destination Tile: {destinationTile}");
+
         if (captureMoves.ContainsKey(currentTile))
         {
+            Debug.Log($"Capture moves for {currentTile}: {string.Join(", ", captureMoves[currentTile])}");
+
             foreach (var (goat, destination) in captureMoves[currentTile])
             {
-                if (destination == destinationTile && GameManager.Instance.IsGoatAtPosition(GameManager.Instance.GetTilePosition(goat)))
+                Debug.Log($"Checking capture: Goat Tile: {goat}, Destination: {destination}");
+
+                if (destination == destinationTile)
                 {
-                    goatTile = goat;
-                    return true;
+                    Vector3 goatPos = GameManager.Instance.GetTilePosition(goat);
+                    Debug.Log($"Goat position to check: {goatPos}");
+                    if (GameManager.Instance.IsGoatAtPosition(goatPos))
+                    {
+                        goatTile = goat;
+                        Debug.Log($"IsValidCapture: True, Goat to capture: {goatTile}");
+                        return true;
+                    }
+                    else
+                    {
+                        Debug.Log("No Goat at position");
+                    }
                 }
             }
         }
+
+        Debug.Log($"IsValidCapture: False");
         return false;
     }
 }

@@ -6,18 +6,18 @@ public class NewBoardManagerB2 : MonoBehaviour
     {
         Debug.Log($"[TILE CLICK] OnMouseDown called on Tile: {gameObject.name}");
 
-        if (GameManagerBoard2.Instance == null)
+        if (GameManagerBoard3.Instance == null)
         {
             Debug.LogError("[TILE CLICK] GameManagerBoard2 instance is not initialized.");
             return;
         }
 
-        Debug.Log($"[TILE CLICK] GameManager Instance is valid. Is Piece Selected: {GameManagerBoard2.Instance.IsPieceSelected()}");
+        Debug.Log($"[TILE CLICK] GameManager Instance is valid. Is Piece Selected: {GameManagerBoard3.Instance.IsPieceSelected()}");
 
-        if (GameManagerBoard2.Instance.IsPieceSelected())
+        if (GameManagerBoard3.Instance.IsPieceSelected())
         {
-            Debug.Log($"[TILE CLICK] A piece is selected. Attempting to move to Tile: {gameObject.name}. Selected Tiger: {(GameManagerBoard2.Instance.selectedTiger != null ? GameManagerBoard2.Instance.selectedTiger.name : "null")}, Selected Goat: {(GameManagerBoard2.Instance.selectedGoat != null ? GameManagerBoard2.Instance.selectedGoat.name : "null")}");
-            GameManagerBoard2.Instance.MovePiece(gameObject);
+            Debug.Log($"[TILE CLICK] A piece is selected. Attempting to move to Tile: {gameObject.name}. Selected Tiger: {(GameManagerBoard3.Instance.selectedTiger != null ? GameManagerBoard3.Instance.selectedTiger.name : "null")}, Selected Goat: {(GameManagerBoard3.Instance.selectedGoat != null ? GameManagerBoard3.Instance.selectedGoat.name : "null")}");
+            GameManagerBoard3.Instance.MovePiece(gameObject);
         }
         else
         {

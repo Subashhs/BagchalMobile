@@ -183,8 +183,23 @@ public class GameManager : MonoBehaviour
     }
 
     // Start Goat movement after all goats are placed
+    public void SelectGoat(GameObject goat)
+    {
+        Debug.Log("SelectGoat called, totalGoatsPlaced: " + totalGoatsPlaced);
+        if (currentTurn == Turn.Goat && totalGoatsPlaced >= 20 && selectedGoat == null)
+        {
+            Debug.Log("Goat selected: " + goat.name);
+            selectedGoat = goat;
+        }
+        else
+        {
+            Debug.Log("Goat selection failed. currentTurn: " + currentTurn + ", selectedGoat: " + selectedGoat);
+        }
+    }
+
     public void MoveGoat(GameObject destinationTile)
     {
+        Debug.Log("MoveGoat called, selectedGoat: " + selectedGoat);
         if (currentTurn == Turn.Goat && selectedGoat != null)
         {
             string currentTile = GetTileName(selectedGoat.transform.position);
@@ -192,25 +207,23 @@ public class GameManager : MonoBehaviour
 
             GoatMovement goatMovement = selectedGoat.GetComponent<GoatMovement>();
 
+            if (goatMovement == null)
+            {
+                Debug.LogError("GoatMovement component missing on selectedGoat!");
+                return;
+            }
+
             if (goatMovement.IsValidMove(currentTile, destinationTileName))
             {
+                Debug.Log("Valid Goat move");
                 selectedGoat.transform.position = destinationTile.transform.position;
-                selectedGoat = null;  // Deselect the goat after move
-                SwitchTurn();  // Switch turn to the tiger
+                selectedGoat = null;
+                SwitchTurn();
             }
             else
             {
-                Debug.Log("Invalid move");
+                Debug.Log("Invalid Goat move");
             }
-        }
-    }
-
-    // Select a goat for moving (only after 20 goats are placed)
-    public void SelectGoat(GameObject goat)
-    {
-        if (currentTurn == Turn.Goat && totalGoatsPlaced >= 20 && selectedGoat == null)
-        {
-            selectedGoat = goat;
         }
     }
 
@@ -249,6 +262,9 @@ public class GameManager : MonoBehaviour
     }
 
     // Check for goat win condition
+    // ... (other GameManager code)
+
+    // Check for goat win condition
     private void CheckGoatWinCondition()
     {
         bool allMovesBlocked = true;
@@ -264,16 +280,27 @@ public class GameManager : MonoBehaviour
                 continue;
             }
 
+            bool tigerCanMove = false;
             foreach (var tile in boardTiles)
             {
                 if (tile != null && tigerMovement.IsValidMove(currentTile, tile.name))
                 {
-                    allMovesBlocked = false;
+                    tigerCanMove = true;
+                    break;
+                }
+
+                if (tile != null && tigerMovement.IsValidCapture(currentTile, tile.name, out string goatTile))
+                {
+                    tigerCanMove = true;
                     break;
                 }
             }
 
-            if (!allMovesBlocked) break;
+            if (tigerCanMove)
+            {
+                allMovesBlocked = false;
+                break;
+            }
         }
 
         if (allMovesBlocked)
@@ -281,6 +308,8 @@ public class GameManager : MonoBehaviour
             EndGame("Goats Win!");
         }
     }
+
+    // ... (rest of GameManager code)
 
     private void EndGame(string result)
     {

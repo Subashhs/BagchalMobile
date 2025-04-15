@@ -3,9 +3,9 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using System.Collections.Generic;
 
-public class GameManagerBoard2 : MonoBehaviour
+public class GameManagerBoard3 : MonoBehaviour
 {
-    public static GameManagerBoard2 Instance { get; private set; }
+    public static GameManagerBoard3 Instance { get; private set; }
 
     public enum Turn { Tiger, Goat }
     public Turn currentTurn = Turn.Goat;
@@ -22,8 +22,8 @@ public class GameManagerBoard2 : MonoBehaviour
     public GameObject tiger;
     public List<GameObject> goats = new List<GameObject>();
 
-    private GoatMovementB2 goatMovement;
-    private TigerMovementB2 tigerMovement;
+    private GoatMovementB3 goatMovement;
+    private TigerMovementB3 tigerMovement;
 
     private bool tigerCapturedGoat = false;
 
@@ -39,8 +39,8 @@ public class GameManagerBoard2 : MonoBehaviour
             return;
         }
 
-        goatMovement = goatPrefab.GetComponent<GoatMovementB2>();
-        tigerMovement = tigerPrefab.GetComponent<TigerMovementB2>();
+        goatMovement = goatPrefab.GetComponent<GoatMovementB3>();
+        tigerMovement = tigerPrefab.GetComponent<TigerMovementB3>();
     }
 
     public void UpdateTurnText()
@@ -104,7 +104,7 @@ public class GameManagerBoard2 : MonoBehaviour
                 selectedTiger = clickedObject;
                 Debug.Log("Tiger selected.");
             }
-            else if (clickedObject.GetComponent<TigerMovementB2>() != null)
+            else if (clickedObject.GetComponent<TigerMovementB3>() != null)
             {
                 if (tiger != null && clickedObject == tiger)
                 {

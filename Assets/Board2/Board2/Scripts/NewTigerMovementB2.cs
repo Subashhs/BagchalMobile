@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class TigerMovementB2 : MonoBehaviour
+public class TigerMovementB3 : MonoBehaviour
 {
     public Dictionary<string, List<string>> validMoves = new Dictionary<string, List<string>>()
     {
@@ -61,7 +61,7 @@ public class TigerMovementB2 : MonoBehaviour
             if (middleGoat != null)
             {
                 Destroy(middleGoat);
-                GameManagerBoard2.Instance.goats.Remove(middleGoat);
+                GameManagerBoard3.Instance.goats.Remove(middleGoat);
                 tiger.transform.position = targetTile.transform.position;
                 Debug.Log($"Tiger jumped from {currentTile} to {targetTileName}, capturing goat at {middleTile}.");
                 return true;
@@ -96,9 +96,9 @@ public class TigerMovementB2 : MonoBehaviour
 
     private GameObject GetGoatAtTile(string tileName)
     {
-        foreach (var goat in GameManagerBoard2.Instance.goats)
+        foreach (var goat in GameManagerBoard3.Instance.goats)
         {
-            if (GetTileName(goat.transform.position, GameManagerBoard2.Instance.tiles) == tileName)
+            if (GetTileName(goat.transform.position, GameManagerBoard3.Instance.tiles) == tileName)
             {
                 return goat;
             }
@@ -119,7 +119,7 @@ public class TigerMovementB2 : MonoBehaviour
 
     public bool IsTileOccupied(GameObject tile)
     {
-        foreach (var goat in GameManagerBoard2.Instance.goats)
+        foreach (var goat in GameManagerBoard3.Instance.goats)
         {
             Debug.Log($"Checking if tile {tile.name} is occupied."); // Add this line
                                                                      // ... rest of the method ...
@@ -130,8 +130,8 @@ public class TigerMovementB2 : MonoBehaviour
                 return true;
             }
         }
-        if (GameManagerBoard2.Instance.tiger != null &&
-            Vector3.Distance(GameManagerBoard2.Instance.tiger.transform.position, tile.transform.position) < 0.1f)
+        if (GameManagerBoard3.Instance.tiger != null &&
+            Vector3.Distance(GameManagerBoard3.Instance.tiger.transform.position, tile.transform.position) < 0.1f)
         {
             return true;
         }
