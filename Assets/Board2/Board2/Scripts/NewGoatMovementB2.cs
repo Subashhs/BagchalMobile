@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class GoatMovementB3 : MonoBehaviour
+public class GoatMovementB2 : MonoBehaviour
 {
     // Define valid moves for the goat. These are the exact tiles the goat can move to from each tile.
     private Dictionary<string, List<string>> validMoves = new Dictionary<string, List<string>>()
@@ -70,7 +70,7 @@ public class GoatMovementB3 : MonoBehaviour
     // Check if the target tile is occupied by any piece
     private bool IsTileOccupied(GameObject tile)
     {
-        foreach (var goat in GameManagerBoard3.Instance.goats)
+        foreach (var goat in GameManagerBoard2.Instance.goats)
         {
             if (Vector3.Distance(goat.transform.position, tile.transform.position) < 0.1f)
             {
@@ -79,8 +79,8 @@ public class GoatMovementB3 : MonoBehaviour
         }
 
         // Check if the tiger is occupying the tile
-        if (GameManagerBoard3.Instance.tiger != null &&
-            Vector3.Distance(GameManagerBoard3.Instance.tiger.transform.position, tile.transform.position) < 0.1f)
+        if (GameManagerBoard2.Instance.tiger != null &&
+            Vector3.Distance(GameManagerBoard2.Instance.tiger.transform.position, tile.transform.position) < 0.1f)
         {
             return true;  // The tile is occupied by a tiger
         }

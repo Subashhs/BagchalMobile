@@ -132,6 +132,7 @@ GameObject:
   m_Component:
   - component: {fileID: 18746767}
   - component: {fileID: 18746769}
+  - component: {fileID: 18746770}
   m_Layer: 0
   m_Name: Tile_1_1
   m_TagString: BoardTile
@@ -175,6 +176,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.5, y: 0.5, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &18746770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 18746766}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09dd60c41dfa2104697c245b1d234a37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &36670283
 GameObject:
   m_ObjectHideFlags: 0
@@ -253,6 +266,7 @@ GameObject:
   m_Component:
   - component: {fileID: 86076039}
   - component: {fileID: 86076041}
+  - component: {fileID: 86076042}
   m_Layer: 0
   m_Name: Tile_1_0
   m_TagString: BoardTile
@@ -296,6 +310,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.5, y: 0.5, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &86076042
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 86076038}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09dd60c41dfa2104697c245b1d234a37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &142652947
 GameObject:
   m_ObjectHideFlags: 0
@@ -482,6 +508,7 @@ GameObject:
   m_Component:
   - component: {fileID: 198106118}
   - component: {fileID: 198106120}
+  - component: {fileID: 198106121}
   m_Layer: 0
   m_Name: Tile_3_1
   m_TagString: BoardTile
@@ -525,6 +552,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.5, y: 0.5, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &198106121
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 198106117}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09dd60c41dfa2104697c245b1d234a37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &221504721
 GameObject:
   m_ObjectHideFlags: 0
@@ -669,6 +708,7 @@ GameObject:
   m_Component:
   - component: {fileID: 233139068}
   - component: {fileID: 233139070}
+  - component: {fileID: 233139071}
   m_Layer: 0
   m_Name: Tile_2_2
   m_TagString: BoardTile
@@ -712,6 +752,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.5, y: 0.5, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &233139071
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 233139067}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09dd60c41dfa2104697c245b1d234a37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &283030664
 GameObject:
   m_ObjectHideFlags: 0
@@ -723,7 +775,7 @@ GameObject:
   - component: {fileID: 283030666}
   - component: {fileID: 283030667}
   m_Layer: 0
-  m_Name: BoardManagerB2
+  m_Name: BoardManagerB3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -753,14 +805,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 283030664}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f06b4f7df9ec20a439a1981f8fd57773, type: 3}
+  m_Script: {fileID: 11500000, guid: a06fa8c6cb50f5e4d82264d9d8ed3b0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   currentTurn: 1
   turnText: {fileID: 328373095}
   winText: {fileID: 744006023}
-  tigerPrefab: {fileID: 8961406747518038574, guid: d86ab285b496cc04d9ea027bc9c3bf80, type: 3}
-  goatPrefab: {fileID: 5289304734942892482, guid: 264b8d6c82ab8194c8283432bddf1a4b, type: 3}
+  tigerPrefab: {fileID: 8961406747518038574, guid: cbfd0ff6d31d08e4ea0b48f72cf4d866, type: 3}
+  goatPrefab: {fileID: 5289304734942892482, guid: 6df56e90560ea7946a163e91180a179f, type: 3}
   selectedTiger: {fileID: 0}
   selectedGoat: {fileID: 0}
   tiger: {fileID: 0}
@@ -909,6 +961,7 @@ GameObject:
   m_Component:
   - component: {fileID: 459875235}
   - component: {fileID: 459875236}
+  - component: {fileID: 459875237}
   m_Layer: 0
   m_Name: Tile_4_0
   m_TagString: BoardTile
@@ -952,6 +1005,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.5, y: 0.5, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &459875237
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 459875234}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09dd60c41dfa2104697c245b1d234a37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &481510345
 GameObject:
   m_ObjectHideFlags: 0
@@ -962,6 +1027,7 @@ GameObject:
   m_Component:
   - component: {fileID: 481510346}
   - component: {fileID: 481510348}
+  - component: {fileID: 481510349}
   m_Layer: 0
   m_Name: Tile_1_2
   m_TagString: BoardTile
@@ -1005,6 +1071,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.5, y: 0.5, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &481510349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 481510345}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09dd60c41dfa2104697c245b1d234a37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &744006022
 GameObject:
   m_ObjectHideFlags: 0
@@ -1149,6 +1227,7 @@ GameObject:
   m_Component:
   - component: {fileID: 790949141}
   - component: {fileID: 790949143}
+  - component: {fileID: 790949144}
   m_Layer: 0
   m_Name: Tile_2_0
   m_TagString: BoardTile
@@ -1192,6 +1271,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.5, y: 0.5, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &790949144
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 790949140}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09dd60c41dfa2104697c245b1d234a37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1125704823
 GameObject:
   m_ObjectHideFlags: 0
@@ -1202,6 +1293,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1125704824}
   - component: {fileID: 1125704826}
+  - component: {fileID: 1125704827}
   m_Layer: 0
   m_Name: Tile_2_1
   m_TagString: BoardTile
@@ -1245,6 +1337,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.5, y: 0.5, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1125704827
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1125704823}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09dd60c41dfa2104697c245b1d234a37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1150379861
 GameObject:
   m_ObjectHideFlags: 0
@@ -1255,6 +1359,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1150379862}
   - component: {fileID: 1150379863}
+  - component: {fileID: 1150379864}
   m_Layer: 0
   m_Name: Tile_4_1
   m_TagString: BoardTile
@@ -1298,6 +1403,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.5, y: 0.5, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1150379864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1150379861}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09dd60c41dfa2104697c245b1d234a37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1364827436
 GameObject:
   m_ObjectHideFlags: 0
@@ -1308,6 +1425,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1364827437}
   - component: {fileID: 1364827439}
+  - component: {fileID: 1364827440}
   m_Layer: 0
   m_Name: Tile_3_2
   m_TagString: BoardTile
@@ -1351,6 +1469,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.5, y: 0.5, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1364827440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1364827436}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09dd60c41dfa2104697c245b1d234a37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1381054167
 GameObject:
   m_ObjectHideFlags: 0
@@ -1480,6 +1610,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1672631876}
   - component: {fileID: 1672631877}
+  - component: {fileID: 1672631878}
   m_Layer: 0
   m_Name: Tile_4_2
   m_TagString: BoardTile
@@ -1523,6 +1654,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.5, y: 0.5, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1672631878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1672631875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09dd60c41dfa2104697c245b1d234a37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1807292990
 GameObject:
   m_ObjectHideFlags: 0
@@ -1815,6 +1958,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1949753883}
   - component: {fileID: 1949753885}
+  - component: {fileID: 1949753886}
   m_Layer: 0
   m_Name: Tile_0_0
   m_TagString: BoardTile
@@ -1858,6 +2002,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.5, y: 0.5, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1949753886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1949753882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09dd60c41dfa2104697c245b1d234a37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2051920527
 GameObject:
   m_ObjectHideFlags: 0
@@ -1868,6 +2024,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2051920528}
   - component: {fileID: 2051920530}
+  - component: {fileID: 2051920531}
   m_Layer: 0
   m_Name: Tile_3_0
   m_TagString: BoardTile
@@ -1911,6 +2068,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.5, y: 0.5, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2051920531
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2051920527}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09dd60c41dfa2104697c245b1d234a37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
