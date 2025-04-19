@@ -351,6 +351,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9d2083d3d5c7f84288b8dc33026e8de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  buttonClickSound: {fileID: 0}
+  audioSource: {fileID: 0}
 --- !u!4 &347271318
 Transform:
   m_ObjectHideFlags: 0
@@ -527,6 +529,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9d2083d3d5c7f84288b8dc33026e8de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  buttonClickSound: {fileID: 0}
+  audioSource: {fileID: 0}
 --- !u!4 &996999852
 Transform:
   m_ObjectHideFlags: 0
@@ -816,7 +820,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.7941403, g: 0.8419117, b: 0.9169811, a: 0}
+  m_BackGroundColor: {r: 0.19607843, g: 0.23529412, b: 0.27450982, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
