@@ -55,8 +55,8 @@ public class GameManager : MonoBehaviour
 
     private void UpdateTurnDisplay()
     {
-        turnIndicator.text = currentTurn == Turn.Tiger ? "Tiger's Turn" : "Goat's Turn";
-        goatsCapturedText.text = "Goats Captured: " + goatsCaptured;
+        turnIndicator.text = currentTurn == Turn.Tiger ? "TIGER'S TURN" : "GOAT'S TURN";
+        goatsCapturedText.text = "GOATS CAPTURED: " + goatsCaptured;
     }
 
     // Place the tigers at the four corners at the start of the game
@@ -152,7 +152,7 @@ public class GameManager : MonoBehaviour
         // Check for tiger win condition
         if (goatsCaptured >= 5)
         {
-            EndGame("Tigers Win!");
+            EndGame("TIGER WINS! YOU WON!");
         }
     }
 
@@ -305,7 +305,7 @@ public class GameManager : MonoBehaviour
 
         if (allMovesBlocked)
         {
-            EndGame("Goats Win!");
+            EndGame("GOATS WINS! YOU WON!");
         }
     }
 
