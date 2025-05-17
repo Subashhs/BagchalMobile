@@ -10,7 +10,7 @@ Neptech GD Co.
 
 
 Developed By:
-## Subash , Debendra, Abhinaya, Usha, Hashini
+## Subash , Debendra, Abhinaya,  Hashini, Usha
 
 
 
